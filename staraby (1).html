@@ -1,0 +1,899 @@
+<title>STARABY</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Figtree:wght@400;500;600;700&family=Noto+Naskh+Arabic:wght@400;600;700&family=Reem+Kufi:wght@500;700&display=swap">
+<style>
+/* Concept : cahier de cours bleu cobalt, motif d'étoile à huit branches, arabe en or. Navigation en bas sur mobile, latérale sur ordinateur. */
+:root{
+  --bg:#1F3A5F; --bg-deep:#172F4E; --panel:#2A4A77; --panel-2:#345889;
+  --ink:#EEF3FA; --muted:#BDCBE2; --line:rgba(255,255,255,.16);
+  --gold:#EFCB7C; --gold-ink:#2B2206; --sky:#9CCBEA;
+  --good:#7BEBB0; --bad:#FFA3AB;
+  --track:rgba(255,255,255,.16); --tip-bg:rgba(239,203,124,.11);
+  --pat:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72' viewBox='0 0 40 40'%3E%3Cg fill='none' stroke='%23ffffff' stroke-opacity='.055' stroke-width='.8'%3E%3Crect x='8' y='8' width='24' height='24'/%3E%3Crect x='8' y='8' width='24' height='24' transform='rotate(45 20 20)'/%3E%3C/g%3E%3C/svg%3E");
+  --f-display:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
+  --f-body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-ar:"Noto Naskh Arabic","Amiri","Geeza Pro","Segoe UI","Arial",serif;
+  --f-kufi:"Reem Kufi","Noto Naskh Arabic","Arial",sans-serif;
+  color-scheme:dark;
+}
+[hidden]{display:none!important}
+/* Fonds au choix : bleu doux (par défaut), bleu ciel, clair, sombre */
+:root[data-skin="ciel"]{--bg:#CFE6F7;--bg-deep:#B8D8EF;--panel:#EAF5FD;--panel-2:#D6EAF8;--ink:#12304F;--muted:#36536F;--line:rgba(18,48,79,.22);--gold:#0B5C8E;--gold-ink:#FFFFFF;--sky:#8A400A;--good:#5CCB93;--bad:#F2A0A8;--track:rgba(18,48,79,.16);--tip-bg:rgba(11,92,142,.1);--pat:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72' viewBox='0 0 40 40'%3E%3Cg fill='none' stroke='%2312304F' stroke-opacity='.07' stroke-width='.8'%3E%3Crect x='8' y='8' width='24' height='24'/%3E%3Crect x='8' y='8' width='24' height='24' transform='rotate(45 20 20)'/%3E%3C/g%3E%3C/svg%3E");color-scheme:light}
+:root[data-skin="clair"]{--bg:#F2F5F9;--bg-deep:#E3E9F1;--panel:#FFFFFF;--panel-2:#E8EFF7;--ink:#16243A;--muted:#4A5C75;--line:rgba(22,36,58,.16);--gold:#0E5A9C;--gold-ink:#FFFFFF;--sky:#8A400A;--good:#5CCB93;--bad:#F2A0A8;--track:rgba(22,36,58,.14);--tip-bg:rgba(14,90,156,.08);--pat:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72' viewBox='0 0 40 40'%3E%3Cg fill='none' stroke='%2312304F' stroke-opacity='.05' stroke-width='.8'%3E%3Crect x='8' y='8' width='24' height='24'/%3E%3Crect x='8' y='8' width='24' height='24' transform='rotate(45 20 20)'/%3E%3C/g%3E%3C/svg%3E");color-scheme:light}
+:root[data-skin="sombre"]{--bg:#10151C;--bg-deep:#0A0E13;--panel:#1A222C;--panel-2:#25303D;--ink:#E8EDF3;--muted:#A6B3C4;--line:rgba(255,255,255,.14);--gold:#E8C26B;--gold-ink:#241B04;--sky:#8CC4E8;--track:rgba(255,255,255,.15);--tip-bg:rgba(232,194,107,.1);color-scheme:dark}
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{
+  background-color:var(--bg);
+  background-image:var(--pat);
+  color:var(--ink); font-family:var(--f-body); font-size:16px; line-height:1.55; margin:0;
+}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg-deep);z-index:30}
+h1,h2,h3{font-family:var(--f-display);line-height:1.12;margin:0;text-wrap:balance;letter-spacing:-.01em}
+p{margin:0}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:var(--gold)}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px;border-radius:6px}
+.ar{font-family:var(--f-ar);direction:rtl;unicode-bidi:isolate;line-height:1.7}
+.tr{color:var(--sky);font-style:italic}
+.muted{color:var(--muted)}
+.wrap{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+/* Layout */
+.shell{display:grid;grid-template-columns:minmax(0,1fr);min-height:100%}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg-deep);border-bottom:1px solid var(--line)}
+.top-in{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:10px;max-width:1180px;margin:0 auto}
+.logo{display:flex;align-items:center;gap:10px;min-width:0}
+.logo svg{width:34px;height:34px;color:var(--gold);flex:none}
+.logo b{font-family:var(--f-display);font-weight:800;font-size:22px;letter-spacing:.09em}
+.logo .ar{font-family:var(--f-kufi);color:var(--gold);font-size:15px;margin-inline-start:4px;white-space:nowrap}
+.meter{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);white-space:nowrap}
+.meter i{display:block;width:84px;height:8px;border-radius:99px;background:var(--track);overflow:hidden}
+.meter i span{display:block;height:100%;background:var(--gold);width:0;transition:width .4s}
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:25;display:grid;grid-template-columns:repeat(6,1fr);gap:2px;background:var(--bg-deep);border-top:1px solid var(--line);padding:6px max(6px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(6px,env(safe-area-inset-left,0px))}
+.nav button{background:none;border:0;border-radius:10px;padding:4px 2px 5px;display:flex;flex-direction:column;align-items:center;gap:0;color:var(--muted);min-width:0}
+.nav .nav-ar{font-family:var(--f-ar);font-size:17px;line-height:1.5;direction:rtl}
+.nav .nav-fr{font-size:10.5px;font-weight:600;letter-spacing:.01em}
+.nav button[aria-current="page"]{background:var(--panel);color:var(--gold)}
+main{padding-block:22px 110px;max-width:1180px;width:100%;margin:0 auto;min-width:0}
+@media(min-width:900px){
+  .shell{grid-template-columns:240px minmax(0,1fr);grid-template-rows:auto 1fr}
+  .top{grid-column:1/-1}
+  .nav{position:sticky;top:calc(64px + env(safe-area-inset-top,0px));align-self:start;height:max-content;grid-template-columns:1fr;gap:4px;background:none;border:0;padding:24px 12px 24px max(16px,env(safe-area-inset-left,0px))}
+  .nav button{flex-direction:row-reverse;justify-content:space-between;align-items:center;padding:10px 14px;font-size:15px}
+  .nav .nav-fr{font-size:15px}
+  .nav .nav-ar{font-size:19px}
+  main{padding-block:28px 60px}
+}
+section[data-view]{display:flex;flex-direction:column;gap:22px;min-width:0}
+
+/* Pieces communes */
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;min-width:0}
+.panel.deep{background:var(--bg-deep)}
+.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.14em;color:var(--gold);font-weight:700}
+.h-sec{font-size:24px}
+.sec-head{display:flex;flex-direction:column;gap:6px}
+.sec-head p{color:var(--muted);max-width:62ch}
+.btn{border:1px solid var(--line);background:var(--panel-2);border-radius:10px;padding:9px 16px;font-weight:600;text-decoration:none;color:var(--ink);display:inline-flex;align-items:center;gap:8px}
+.btn.gold{background:var(--gold);color:var(--gold-ink);border-color:var(--gold)}
+.btn.ghost{background:transparent}
+.btn:hover{filter:brightness(1.1)}
+.spk{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--bg-deep);display:grid;place-items:center;flex:none;padding:0;color:var(--gold)}
+.spk svg{width:18px;height:18px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line);background:transparent;border-radius:99px;padding:6px 14px;font-size:14px;font-weight:600}
+.chip[aria-pressed="true"]{background:var(--gold);color:var(--gold-ink);border-color:var(--gold)}
+.scroll-x{overflow-x:auto;max-width:100%}
+table{border-collapse:collapse;width:100%}
+th,td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:middle}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:700}
+td.ar{text-align:right;font-size:24px;white-space:nowrap}
+.tip{border-inline-start:4px solid var(--gold);background:var(--tip-bg);padding:12px 14px;border-radius:0 10px 10px 0}
+.tip b{color:var(--gold)}
+
+/* Accueil */
+.hero{display:grid;gap:22px;grid-template-columns:minmax(0,1fr);align-items:center}
+.hero h1{font-size:clamp(30px,6vw,52px);font-weight:800}
+.hero p.lead{font-size:18px;color:var(--muted);max-width:52ch;margin-top:12px}
+.hero-cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.hello{background:var(--bg-deep);border:1px solid var(--line);border-radius:16px;padding:22px;text-align:center;display:flex;flex-direction:column;gap:6px;align-items:center}
+.hello .ar{font-size:clamp(56px,13vw,92px);color:var(--gold);line-height:1.3}
+@media(min-width:760px){.hero{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr)}}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.stat b{display:block;font-family:var(--f-display);font-size:30px;font-weight:800;font-variant-numeric:tabular-nums}
+.stat span{color:var(--muted);font-size:14px}
+.path{display:flex;flex-direction:column;gap:10px;margin:0;padding:0;list-style:none}
+.path li{display:grid;grid-template-columns:36px minmax(0,1fr) auto;gap:12px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.path .dot{width:36px;height:36px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-weight:700;font-size:14px}
+.path li.done .dot{background:var(--gold);border-color:var(--gold);color:var(--gold-ink)}
+.path h3{font-size:17px}
+.path p{font-size:14px;color:var(--muted)}
+.bar{height:6px;border-radius:99px;background:var(--track);overflow:hidden;margin-top:6px}
+.bar span{display:block;height:100%;background:var(--sky)}
+.two{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr))}
+.two ul{margin:10px 0 0;padding-inline-start:18px;display:flex;flex-direction:column;gap:6px}
+
+/* Alphabet */
+.detail{display:grid;gap:18px;grid-template-columns:minmax(0,1fr);scroll-margin-top:90px;background:var(--bg-deep);border-radius:16px;padding:20px;border:1px solid var(--line)}
+@media(min-width:760px){.detail{grid-template-columns:200px minmax(0,1fr)}}
+.big{font-family:var(--f-ar);font-size:120px;line-height:1.25;color:var(--gold);text-align:center;background:var(--panel);border-radius:12px;padding:6px 0}
+.detail h3{font-size:28px}
+.detail .snd{font-size:18px;margin-top:4px}
+.forms{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:14px}
+.forms div{background:var(--panel);border-radius:10px;text-align:center;padding:8px 2px}
+.forms .ar{font-size:34px;display:block;line-height:1.5}
+.forms small{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.ex{display:flex;align-items:center;gap:14px;margin-top:14px;flex-wrap:wrap}
+.ex .ar{font-size:34px;color:var(--gold)}
+.lgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:8px}
+.lbtn{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:6px 2px 8px;display:flex;flex-direction:column;align-items:center;gap:0}
+.lbtn .ar{font-size:36px;line-height:1.35;color:var(--ink)}
+.lbtn small{font-size:12px;color:var(--muted)}
+.lbtn[aria-pressed="true"]{background:var(--gold);color:var(--gold-ink);border-color:var(--gold)}
+.lbtn[aria-pressed="true"] .ar,.lbtn[aria-pressed="true"] small{color:var(--gold-ink)}
+.lbtn.seen::after{content:"";position:absolute;top:6px;inset-inline-end:6px;width:7px;height:7px;border-radius:50%;background:var(--good)}
+.signs{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.sign{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:12px}
+.sign .ar{font-size:34px;color:var(--gold);line-height:1.4}
+.sign b{display:block;font-size:14px}
+.sign span{font-size:13px;color:var(--muted)}
+
+/* Grammaire */
+details.lesson{background:var(--panel);border:1px solid var(--line);border-radius:12px}
+details.lesson>summary{list-style:none;cursor:pointer;padding:14px 16px;display:flex;align-items:center;gap:12px}
+details.lesson>summary::-webkit-details-marker{display:none}
+.lesson .num{width:34px;height:34px;border-radius:50%;background:var(--bg-deep);display:grid;place-items:center;font-weight:700;font-size:14px;flex:none}
+.lesson.done .num{background:var(--gold);color:var(--gold-ink)}
+.lesson .ttl{flex:1;min-width:0}
+.lesson .ttl b{font-family:var(--f-display);font-size:18px;display:block}
+.lesson .ttl .ar{font-size:18px;color:var(--gold);line-height:1.4}
+.lesson summary::after{content:"+";font-size:24px;color:var(--gold);flex:none}
+.lesson[open]>summary::after{content:"−"}
+.lbody{padding:4px 16px 18px;display:flex;flex-direction:column;gap:14px}
+.lbody>p{max-width:68ch}
+.lvhead{display:flex;flex-direction:column;gap:2px;margin-top:16px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.lvhead b{font-family:var(--f-display);font-size:20px;color:var(--gold)}
+.lvhead span{color:var(--muted);font-size:14px}
+
+/* Vocabulaire */
+.tools{display:flex;flex-direction:column;gap:12px}
+.search{width:100%;max-width:420px;background:var(--bg-deep);border:1px solid var(--line);border-radius:10px;padding:10px 14px;color:var(--ink);font:inherit}
+.search::placeholder{color:var(--muted)}
+.words{display:flex;flex-direction:column;gap:8px}
+.word{display:grid;grid-template-columns:minmax(90px,auto) minmax(0,1fr) auto auto;gap:12px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 12px}
+.word .ar{font-size:28px;color:var(--gold);text-align:right;line-height:1.5}
+.word .fr{font-weight:600}
+.word .tr{font-size:14px}
+.known{width:38px;height:38px;border-radius:10px;border:1px solid var(--line);background:var(--bg-deep);display:grid;place-items:center;padding:0}
+.known[aria-pressed="true"]{background:var(--good);color:#05301A;border-color:var(--good)}
+.known svg{width:18px;height:18px}
+.catname{display:flex;align-items:baseline;gap:10px;margin-top:6px}
+.catname .ar{color:var(--gold);font-size:20px}
+.card{background:var(--bg-deep);border:1px solid var(--line);border-radius:16px;padding:28px 18px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;min-height:280px;justify-content:center}
+.card .ar{font-size:clamp(54px,14vw,86px);color:var(--gold);line-height:1.4}
+.card .reveal{min-height:64px}
+.card .fr{font-size:24px;font-weight:700;font-family:var(--f-display)}
+.cardbar{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+
+/* Dialogues */
+.dlg{display:flex;flex-direction:column;gap:12px}
+.dlg-head{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;align-items:flex-start}
+.line{display:flex;gap:10px;align-items:flex-start;max-width:min(100%,640px)}
+.line.b{align-self:flex-end;flex-direction:row-reverse}
+.bubble{background:var(--panel-2);border:1px solid var(--line);border-radius:14px 14px 14px 4px;padding:10px 14px;min-width:0}
+.line.b .bubble{background:var(--panel);border-radius:14px 14px 4px 14px}
+.bubble .who{font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);font-weight:700}
+.bubble .ar{font-size:24px;display:block}
+.bubble .tr,.bubble .fr{font-size:14.5px;display:block}
+.bubble .fr{color:var(--muted)}
+.hide-tr .tr{display:none}.hide-fr .fr{display:none}
+.chat{display:flex;flex-direction:column;gap:10px}
+
+/* Quiz */
+.modes{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr))}
+.mode{text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:6px}
+.mode:hover{border-color:var(--gold)}
+.mode b{font-family:var(--f-display);font-size:19px}
+.mode span{color:var(--muted);font-size:14px}
+.mode em{font-style:normal;color:var(--gold);font-weight:700;font-size:14px}
+.qhead{display:flex;justify-content:space-between;gap:12px;font-size:14px;color:var(--muted)}
+.qprompt{background:var(--bg-deep);border:1px solid var(--line);border-radius:16px;padding:26px 16px;text-align:center}
+.qprompt .ar{font-size:clamp(52px,13vw,80px);color:var(--gold);line-height:1.4;display:block}
+.qprompt .txt{font-family:var(--f-display);font-size:clamp(26px,6vw,38px);font-weight:700}
+.opts{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr))}
+.opt{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;font-size:18px;font-weight:600;text-align:center;min-height:56px}
+.opt.ar{font-size:30px;font-weight:400}
+.opt:hover:not(:disabled){border-color:var(--gold)}
+.opt.ok{background:var(--good);color:#05301A;border-color:var(--good)}
+.opt.ko{background:var(--bad);color:#3A0710;border-color:var(--bad)}
+.opt:disabled{cursor:default}
+.fb{min-height:48px}
+.score{font-family:var(--f-display);font-size:64px;font-weight:800;color:var(--gold);line-height:1}
+
+/* Réglages, fenêtre de lettre, en-tête */
+.right{display:flex;align-items:center;gap:10px}
+.gear{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--panel);display:grid;place-items:center;color:var(--gold);padding:0;flex:none}
+.gear svg{width:20px;height:20px}
+.sheet{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.55);display:flex;align-items:flex-end;justify-content:center}
+.sheet-in{width:100%;max-width:720px;max-height:92%;overflow:auto;background:var(--bg);border:1px solid var(--line);border-radius:18px 18px 0 0;padding:14px max(16px,env(safe-area-inset-right,0px)) calc(16px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:14px}
+.sheet-bar{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+@media(min-width:760px){.sheet{align-items:center}.sheet-in{border-radius:18px;max-height:88%}}
+.skins{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:12px}
+.skin{display:flex;flex-direction:column;gap:8px;text-align:left;padding:10px;border-radius:12px;border:2px solid var(--line);background:var(--panel)}
+.skin[aria-pressed="true"]{border-color:var(--gold)}
+.skin b{font-family:var(--f-display);font-size:18px}
+.swatch{height:64px;border-radius:8px;border:1px solid rgba(128,128,128,.4);display:flex;align-items:center;justify-content:center;font-family:var(--f-ar);font-size:32px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(96px + env(safe-area-inset-bottom,0px));background:var(--gold);color:var(--gold-ink);font-weight:600;padding:10px 16px;border-radius:10px;z-index:60;max-width:min(92vw,420px);text-align:center}
+@media(min-width:900px){.toast{bottom:28px}}
+@media(max-width:520px){
+  .meter i{width:48px}
+  .logo .ar{display:none}
+  .word{grid-template-columns:minmax(70px,auto) minmax(0,1fr) auto;row-gap:6px}
+  .word .known{grid-column:3;grid-row:1}
+  .word .spk{display:none}
+  .big{font-size:96px}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+
+<div class="shell">
+  <header class="top"><div class="top-in wrap">
+    <div class="logo">
+      <svg viewBox="0 0 40 40" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"><rect x="8" y="8" width="24" height="24"/><rect x="8" y="8" width="24" height="24" transform="rotate(45 20 20)"/></g></svg>
+      <b>STARABY</b><span class="ar" lang="ar" dir="rtl">تعلّم العربية</span>
+    </div>
+    <div class="right">
+      <div class="meter" title="Progression globale"><span id="pct">0 %</span><i><span id="pbar"></span></i></div>
+      <button class="gear" data-go="reglages" aria-label="Apparence et réglages"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
+    </div>
+  </div></header>
+  <nav class="nav" id="nav" aria-label="Sections"></nav>
+  <main class="wrap" id="main">
+
+    <section data-view="accueil" id="v-accueil">
+      <div class="hero">
+        <div>
+          <div class="eyebrow">Cours d’arabe pour débutants</div>
+          <h1 style="margin-top:10px">Votre cours d’arabe tient dans la poche.</h1>
+          <p class="lead">Alphabet, grammaire, vocabulaire et dialogues, avec translittération et traduction française. Quinze minutes par jour suffisent pour avancer.</p>
+          <div class="hero-cta">
+            <button class="btn gold" data-go="alphabet">Commencer par l’alphabet</button>
+            <button class="btn" id="resume" hidden></button>
+            <button class="btn" data-go="quiz">Faire un quiz</button>
+          </div>
+        </div>
+        <div class="hello">
+          <span class="ar" lang="ar" dir="rtl">مرحبا</span>
+          <span class="tr" style="font-size:20px">marḥaban</span>
+          <span class="muted">Bonjour</span>
+          <button class="spk" data-say="مرحبا" aria-label="Écouter marḥaban" style="margin-top:6px"></button>
+        </div>
+      </div>
+      <div class="stats" id="stats"></div>
+      <div class="sec-head"><div class="eyebrow">Parcours</div><h2 class="h-sec">Neuf étapes, du premier signe à la conversation</h2></div>
+      <ol class="path" id="path"></ol>
+      <div class="two">
+        <div class="panel">
+          <h3>À savoir avant de commencer</h3>
+          <ul>
+            <li>L’arabe s’écrit et se lit de <b>droite à gauche</b>.</li>
+            <li>Les lettres changent de forme selon leur place dans le mot.</li>
+            <li>Les voyelles brèves ne sont presque jamais écrites. Ici, elles sont notées pour vous aider.</li>
+            <li>Ce cours utilise l’<b>arabe standard moderne</b>, compris partout. Les dialectes (marocain, égyptien, levantin…) s’apprennent ensuite.</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h3>Lire la translittération</h3>
+          <div class="scroll-x"><table>
+            <tr><td><b>ā ī ū</b></td><td>voyelles longues (a, i, ou allongés)</td></tr>
+            <tr><td><b>ḥ</b></td><td>h soufflé du fond de la gorge</td></tr>
+            <tr><td><b>ṣ ḍ ṭ ẓ</b></td><td>consonnes « emphatiques », plus graves</td></tr>
+            <tr><td><b>ʿ</b></td><td>son de gorge (lettre ʿayn)</td></tr>
+            <tr><td><b>ʾ</b></td><td>coup de glotte (hamza)</td></tr>
+            <tr><td><b>kh gh q</b></td><td>jota espagnole, r grasseyé, k profond</td></tr>
+          </table></div>
+        </div>
+      </div>
+    </section>
+
+    <section data-view="alphabet" id="v-alphabet" hidden>
+      <div class="sec-head"><div class="eyebrow">الحروف · Les lettres</div><h2 class="h-sec">L’alphabet arabe : 28 lettres</h2>
+        <p>Touchez une lettre pour voir sa prononciation, ses quatre formes et un mot d’exemple. Un point vert marque les lettres déjà vues.</p></div>
+      <div class="lgrid" id="lgrid"></div>
+      <div class="sec-head"><h2 class="h-sec">Voyelles brèves et signes</h2><p>Ces petits signes se placent au-dessus ou au-dessous de la consonne. Ici, avec la lettre ب (b).</p></div>
+      <div class="signs" id="signs"></div>
+      <div class="two">
+        <div class="panel"><h3>Voyelles longues</h3>
+          <div class="signs" id="longv" style="margin-top:12px"></div></div>
+        <div class="panel"><h3>Autres signes utiles</h3>
+          <div class="signs" id="othersigns" style="margin-top:12px"></div></div>
+      </div>
+    </section>
+
+    <section data-view="grammaire" id="v-grammaire" hidden>
+      <div class="sec-head"><div class="eyebrow">النحو · La grammaire</div><h2 class="h-sec">Trente leçons, de la phrase simple au texte</h2>
+        <p>Trois niveaux à parcourir dans l’ordre. Ouvrez une leçon, lisez les exemples à voix haute, puis touchez « Marquer comme comprise ».</p></div>
+      <div class="tools"><div class="chips" id="gchips"></div><p class="muted" id="gcount"></p></div>
+      <div id="lessons" style="display:flex;flex-direction:column;gap:10px"></div>
+    </section>
+
+    <section data-view="vocabulaire" id="v-vocabulaire" hidden>
+      <div class="sec-head"><div class="eyebrow">المفردات · Le vocabulaire</div><h2 class="h-sec">Mots essentiels par thème</h2>
+        <p>Cochez les mots que vous connaissez. Le mode cartes sert à réviser : l’arabe d’abord, la réponse ensuite.</p></div>
+      <div class="tools">
+        <input class="search" id="vsearch" type="search" placeholder="Chercher un mot en français ou en arabe" aria-label="Chercher un mot">
+        <select class="search" id="vcat" aria-label="Choisir un thème"></select>
+        <div class="chips"><button class="chip" id="vmode" aria-pressed="false">Mode cartes</button><button class="chip" id="vtodo" aria-pressed="false">À réviser seulement</button><button class="chip" id="vhide" aria-pressed="false">Masquer la translittération</button></div>
+      </div>
+      <div id="vout" style="display:flex;flex-direction:column;gap:12px"></div>
+    </section>
+
+    <section data-view="dialogues" id="v-dialogues" hidden>
+      <div class="sec-head"><div class="eyebrow">الحوار · Les dialogues</div><h2 class="h-sec">Quatre scènes de la vie courante</h2>
+        <p>Lisez d’abord l’arabe, puis vérifiez avec la translittération. Pour vous tester, masquez la traduction et reconstituez le sens.</p></div>
+      <div class="chips"><button class="chip" id="dtr" aria-pressed="true">Translittération</button><button class="chip" id="dfr" aria-pressed="true">Traduction</button></div>
+      <div id="dout" style="display:flex;flex-direction:column;gap:22px"></div>
+    </section>
+
+    <section data-view="quiz" id="v-quiz" hidden>
+      <div class="sec-head"><div class="eyebrow">الاختبار · Le quiz</div><h2 class="h-sec">Testez-vous en dix questions</h2></div>
+      <div id="qout" style="display:flex;flex-direction:column;gap:18px"></div>
+    </section>
+
+    <section data-view="reglages" id="v-reglages" hidden>
+      <div class="sec-head"><div class="eyebrow">الإعدادات · Réglages</div><h2 class="h-sec">Apparence et confort</h2>
+        <p>Choisissez le fond qui fatigue le moins vos yeux. Votre choix est gardé sur cet appareil.</p></div>
+      <div class="skins" id="skins"></div>
+      <div class="two" id="setmore"></div>
+    </section>
+
+  </main>
+</div>
+<div class="sheet" id="sheet" hidden role="dialog" aria-modal="true" aria-label="Détail de la lettre"><div class="sheet-in">
+  <div class="sheet-bar"><button class="btn ghost" data-lnav="-1">← Précédente</button><button class="btn" data-lclose="1">Fermer</button><button class="btn ghost" data-lnav="1">Suivante →</button></div>
+  <div class="detail" id="ldetail"></div>
+</div></div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+(function(){
+"use strict";
+var $=function(s,r){return (r||document).querySelector(s)};
+var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+var KEY="staraby.v1";
+var S={lessons:{},words:{},letters:{},best:{},skin:"doux",last:""};
+try{var raw=localStorage.getItem(KEY);if(raw){var o=JSON.parse(raw);S.lessons=o.lessons||{};S.words=o.words||{};S.letters=o.letters||{};S.best=o.best||{};S.skin=o.skin||"doux";S.last=o.last||""}}catch(e){}
+function applySkin(k){try{document.documentElement.setAttribute("data-skin",k)}catch(e){}}
+applySkin(S.skin);
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function ar(t,cls){return '<span class="ar'+(cls?' '+cls:'')+'" lang="ar" dir="rtl">'+t+'</span>'}
+var SPK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>';
+var CHK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7"/></svg>';
+function spkBtn(t,label){return '<button class="spk" data-say="'+t+'" aria-label="Écouter '+(label||'')+'">'+SPK+'</button>'}
+
+/* ---------- Voix ---------- */
+var toastT;
+function toast(m){var t=$("#toast");t.textContent=m;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(function(){t.hidden=true},3800)}
+function arVoice(){try{var v=speechSynthesis.getVoices();for(var i=0;i<v.length;i++){if(v[i].lang&&v[i].lang.toLowerCase().indexOf("ar")===0)return v[i]}}catch(e){}return null}
+function say(text,queue){
+  try{
+    if(!("speechSynthesis" in window))throw 0;
+    var v=arVoice();
+    if(!queue)speechSynthesis.cancel();
+    var u=new SpeechSynthesisUtterance(text);u.lang=v?v.lang:"ar-SA";if(v)u.voice=v;u.rate=.8;
+    u.onerror=function(ev){var er=ev&&ev.error;if(er&&er!=="canceled"&&er!=="interrupted")toast("Voix arabe indisponible. Voir Réglages, rubrique Voix arabe.")};
+    speechSynthesis.speak(u);return true;
+  }catch(e){toast("La lecture audio n’est pas disponible ici.");return false}
+}
+
+/* ---------- Données : alphabet ---------- */
+var LET=[
+["ا","alif","ā","voyelle longue « â », ou support de la hamza",0,"أسد","asad","lion"],
+["ب","bāʾ","b","« b » comme bateau",1,"بيت","bayt","maison"],
+["ت","tāʾ","t","« t » comme table",1,"تفاحة","tuffāḥa","pomme"],
+["ث","thāʾ","th","« th » anglais de think, langue entre les dents",1,"ثلج","thalj","neige"],
+["ج","jīm","j","« dj » comme djinn (« j » dans certains pays)",1,"جمل","jamal","chameau"],
+["ح","ḥāʾ","ḥ","« h » soufflé du fond de la gorge, comme sur une vitre",1,"حليب","ḥalīb","lait"],
+["خ","khāʾ","kh","« kh » comme la jota espagnole",1,"خبز","khubz","pain"],
+["د","dāl","d","« d » comme dame",0,"دفتر","daftar","cahier"],
+["ذ","dhāl","dh","« th » anglais de this, sonore",0,"ذهب","dhahab","or"],
+["ر","rāʾ","r","« r » roulé",0,"رجل","rajul","homme"],
+["ز","zāy","z","« z » comme zèbre",0,"زيت","zayt","huile"],
+["س","sīn","s","« s » comme sac",1,"سمك","samak","poisson"],
+["ش","shīn","sh","« ch » comme chat",1,"شمس","shams","soleil"],
+["ص","ṣād","ṣ","« s » emphatique, plus grave",1,"صباح","ṣabāḥ","matin"],
+["ض","ḍād","ḍ","« d » emphatique, plus grave",1,"ضوء","ḍawʾ","lumière"],
+["ط","ṭāʾ","ṭ","« t » emphatique, plus grave",1,"طعام","ṭaʿām","nourriture"],
+["ظ","ẓāʾ","ẓ","« dh » emphatique, plus grave",1,"ظل","ẓill","ombre"],
+["ع","ʿayn","ʿ","son de gorge serrée, sans équivalent en français",1,"عين","ʿayn","œil"],
+["غ","ghayn","gh","« r » grasseyé, comme le r de Paris",1,"غرفة","ghurfa","chambre"],
+["ف","fāʾ","f","« f » comme fil",1,"فيل","fīl","éléphant"],
+["ق","qāf","q","« k » prononcé tout au fond de la gorge",1,"قمر","qamar","lune"],
+["ك","kāf","k","« k » comme kilo",1,"كتاب","kitāb","livre"],
+["ل","lām","l","« l » comme lune",1,"ليل","layl","nuit"],
+["م","mīm","m","« m » comme main",1,"ماء","māʾ","eau"],
+["ن","nūn","n","« n » comme nuit",1,"نور","nūr","lumière"],
+["ه","hāʾ","h","« h » aspiré, léger",1,"هلال","hilāl","croissant de lune"],
+["و","wāw","w / ū","« w » comme ouate, ou « ou » long",0,"وردة","warda","rose"],
+["ي","yāʾ","y / ī","« y » comme yaourt, ou « î » long",1,"يد","yad","main"]
+];
+var T="ـ";
+function forms(ch,conn){
+  return conn?[ch,ch+T,T+ch+T,T+ch]:[ch,ch,T+ch,T+ch];
+}
+var SIGNS=[
+["بَ","fatḥa","ba","petit « a »"],["بُ","ḍamma","bu","petit « ou »"],["بِ","kasra","bi","petit « i »"],
+["بْ","sukūn","b","aucune voyelle"],["بّ","shadda","bb","consonne doublée"],
+["بً","tanwīn fatḥ","ban","« -an » en fin de mot"],["بٌ","tanwīn ḍamm","bun","« -un » en fin de mot"],["بٍ","tanwīn kasr","bin","« -in » en fin de mot"]];
+var LONGV=[["بَا","bā","a long"],["بُو","bū","ou long"],["بِي","bī","i long"]];
+var OTHER=[["ء","hamza (ʾ)","coup de glotte"],["ة","tāʾ marbūṭa","« -a » du féminin"],["لا","lām-alif","lettre double : la"],["ى","alif maqṣūra","« â » en fin de mot"],["آ","alif madda","ʾā : hamza + a long"]];
+
+/* ---------- Données : vocabulaire ---------- */
+var VOC=[
+{id:"salut",t:"Salutations",a:"التحية",w:[
+["مرحبا","marḥaban","bonjour, salut"],["السلام عليكم","as-salāmu ʿalaykum","la paix sur vous"],["وعليكم السلام","wa ʿalaykumu s-salām","et sur vous la paix"],
+["صباح الخير","ṣabāḥ al-khayr","bonjour (le matin)"],["مساء الخير","masāʾ al-khayr","bonsoir"],["شكرا","shukran","merci"],["عفوا","ʿafwan","de rien, excusez-moi"],
+["من فضلك","min faḍlik","s’il te plaît"],["مع السلامة","maʿa s-salāma","au revoir"],["نعم","naʿam","oui"],["لا","lā","non"],["آسف","āsif","désolé"]]},
+{id:"nombres",t:"Nombres de 0 à 10",a:"الأعداد",w:[
+["صفر","ṣifr","zéro"],["واحد","wāḥid","un"],["اثنان","ithnān","deux"],["ثلاثة","thalātha","trois"],["أربعة","arbaʿa","quatre"],["خمسة","khamsa","cinq"],
+["ستة","sitta","six"],["سبعة","sabʿa","sept"],["ثمانية","thamāniya","huit"],["تسعة","tisʿa","neuf"],["عشرة","ʿashara","dix"]]},
+{id:"jours",t:"Jours de la semaine",a:"الأيام",w:[
+["الاثنين","al-ithnayn","lundi"],["الثلاثاء","ath-thulāthāʾ","mardi"],["الأربعاء","al-arbiʿāʾ","mercredi"],["الخميس","al-khamīs","jeudi"],
+["الجمعة","al-jumʿa","vendredi"],["السبت","as-sabt","samedi"],["الأحد","al-aḥad","dimanche"]]},
+{id:"famille",t:"Famille",a:"العائلة",w:[
+["أب","ab","père"],["أم","umm","mère"],["أخ","akh","frère"],["أخت","ukht","sœur"],["ابن","ibn","fils"],["بنت","bint","fille"],
+["جد","jadd","grand-père"],["جدة","jadda","grand-mère"],["زوج","zawj","époux"],["عائلة","ʿāʾila","famille"]]},
+{id:"manger",t:"Manger et boire",a:"الطعام",w:[
+["ماء","māʾ","eau"],["خبز","khubz","pain"],["حليب","ḥalīb","lait"],["قهوة","qahwa","café"],["شاي","shāy","thé"],["لحم","laḥm","viande"],
+["سمك","samak","poisson"],["أرز","ruzz","riz"],["تفاحة","tuffāḥa","pomme"],["طعام","ṭaʿām","nourriture"]]},
+{id:"voyage",t:"Voyage",a:"السفر",w:[
+["مطار","maṭār","aéroport"],["فندق","funduq","hôtel"],["تذكرة","tadhkira","billet"],["جواز سفر","jawāz safar","passeport"],["حقيبة","ḥaqība","valise, sac"],
+["محطة","maḥaṭṭa","gare, station"],["سيارة","sayyāra","voiture"],["طريق","ṭarīq","route, chemin"],["مدينة","madīna","ville"],["خريطة","kharīṭa","carte"]]},
+{id:"couleurs",t:"Couleurs",a:"الألوان",w:[
+["أحمر","aḥmar","rouge"],["أزرق","azraq","bleu"],["أخضر","akhḍar","vert"],["أصفر","aṣfar","jaune"],["أبيض","abyaḍ","blanc"],["أسود","aswad","noir"]]},
+{id:"temps",t:"Le temps",a:"الوقت",w:[
+["اليوم","al-yawm","aujourd’hui"],["غدا","ghadan","demain"],["أمس","amsi","hier"],["الآن","al-ān","maintenant"],["صباح","ṣabāḥ","matin"],
+["مساء","masāʾ","soir"],["ليل","layl","nuit"],["أسبوع","usbūʿ","semaine"],["شهر","shahr","mois"],["سنة","sana","année"]]},
+{id:"verbes",t:"Verbes courants",a:"الأفعال",w:[
+["ذهب","dhahaba","il est allé"],["أكل","akala","il a mangé"],["شرب","shariba","il a bu"],["كتب","kataba","il a écrit"],["قرأ","qaraʾa","il a lu"],
+["فهم","fahima","il a compris"],["تكلم","takallama","il a parlé"],["أحب","aḥabba","il a aimé"],["عمل","ʿamila","il a travaillé"],["درس","darasa","il a étudié"]]},
+{id:"corps",t:"Le corps",a:"الجسم",w:[
+["رأس","raʾs","tête"],["وجه","wajh","visage"],["عين","ʿayn","œil"],["أذن","udhun","oreille"],["أنف","anf","nez"],["فم","fam","bouche"],
+["يد","yad","main"],["رجل","rijl","jambe, pied"],["قلب","qalb","cœur"],["ظهر","ẓahr","dos"],["بطن","baṭn","ventre"],["شعر","shaʿr","cheveux"]]},
+{id:"sante",t:"Santé",a:"الصحة",w:[
+["مستشفى","mustashfā","hôpital"],["عيادة","ʿiyāda","clinique, cabinet médical"],["صيدلية","ṣaydaliyya","pharmacie"],["دواء","dawāʾ","médicament"],["وصفة","waṣfa","ordonnance"],["مريض","marīḍ","malade"],
+["صحة","ṣiḥḥa","santé"],["ألم","alam","douleur"],["صداع","ṣudāʿ","mal de tête"],["حمى","ḥummā","fièvre"],["سعال","suʿāl","toux"],["تعب","taʿab","fatigue"]]},
+{id:"maison",t:"La maison",a:"البيت",w:[
+["بيت","bayt","maison"],["غرفة","ghurfa","chambre, pièce"],["مطبخ","maṭbakh","cuisine"],["حمام","ḥammām","salle de bain"],["باب","bāb","porte"],["نافذة","nāfidha","fenêtre"],
+["طاولة","ṭāwila","table"],["كرسي","kursī","chaise"],["سرير","sarīr","lit"],["مفتاح","miftāḥ","clé"]]},
+{id:"ville",t:"Lieux de la ville",a:"المدينة",w:[
+["سوق","sūq","marché"],["مسجد","masjid","mosquée"],["مدرسة","madrasa","école"],["جامعة","jāmiʿa","université"],["بنك","bank","banque"],["مطعم","maṭʿam","restaurant"],["شارع","shāriʿ","rue"],
+["جسر","jisr","pont"],["ميدان","maydān","place publique"],["متحف","matḥaf","musée"],["مكتبة","maktaba","bibliothèque, librairie"],["حديقة","ḥadīqa","jardin, parc"],["سفارة","sifāra","ambassade"]]},
+{id:"transport",t:"Transports",a:"المواصلات",w:[
+["حافلة","ḥāfila","bus"],["قطار","qiṭār","train"],["طائرة","ṭāʾira","avion"],["دراجة","darrāja","vélo"],["سفينة","safīna","bateau"],["سيارة أجرة","sayyārat ujra","taxi"],
+["ميناء","mīnāʾ","port"],["راكب","rākib","passager"],["بطاقة","biṭāqa","carte, ticket"],["موعد","mawʿid","horaire, rendez-vous"]]},
+{id:"achats",t:"Achats et argent",a:"التسوق",w:[
+["ثمن","thaman","prix"],["نقود","nuqūd","argent (monnaie)"],["رخيص","rakhīṣ","bon marché"],["غالٍ","ghālin","cher"],["دكان","dukkān","boutique"],["بائع","bāʾiʿ","vendeur"],
+["اشترى","ishtarā","il a acheté"],["باع","bāʿa","il a vendu"],["خصم","khaṣm","remise, réduction"],["فاتورة","fātūra","facture"],["محفظة","miḥfaẓa","portefeuille"],["كم الثمن؟","kam ath-thaman?","combien ça coûte ?"]]},
+{id:"vetements",t:"Vêtements",a:"الملابس",w:[
+["قميص","qamīṣ","chemise"],["بنطلون","banṭalūn","pantalon"],["فستان","fustān","robe"],["معطف","miʿṭaf","manteau"],["حذاء","ḥidhāʾ","chaussures"],["جوارب","jawārib","chaussettes"],
+["قبعة","qubbaʿa","chapeau"],["حزام","ḥizām","ceinture"],["نظارة","naẓẓāra","lunettes"],["ثوب","thawb","vêtement long, robe"]]},
+{id:"nature",t:"Nature et météo",a:"الطبيعة والطقس",w:[
+["شمس","shams","soleil"],["قمر","qamar","lune"],["سماء","samāʾ","ciel"],["سحابة","saḥāba","nuage"],["مطر","maṭar","pluie"],["ثلج","thalj","neige"],["رياح","riyāḥ","vents"],
+["حار","ḥārr","chaud"],["بارد","bārid","froid"],["بحر","baḥr","mer"],["نهر","nahr","fleuve"],["جبل","jabal","montagne"],["صحراء","ṣaḥrāʾ","désert"],["شجرة","shajara","arbre"]]},
+{id:"metiers",t:"Métiers",a:"المهن",w:[
+["طبيب","ṭabīb","médecin"],["ممرض","mumarriḍ","infirmier"],["مهندس","muhandis","ingénieur"],["معلم","muʿallim","enseignant"],["محام","muḥāmin","avocat"],["سائق","sāʾiq","chauffeur"],
+["طباخ","ṭabbākh","cuisinier"],["تاجر","tājir","commerçant"],["طالب","ṭālib","étudiant"],["شرطي","shurṭī","policier"],["عامل","ʿāmil","ouvrier"],["كاتب","kātib","écrivain"]]},
+{id:"adjectifs",t:"Adjectifs et sentiments",a:"الصفات والمشاعر",w:[
+["سعيد","saʿīd","heureux"],["حزين","ḥazīn","triste"],["غاضب","ghāḍib","en colère"],["خائف","khāʾif","effrayé"],["متعب","mutʿab","fatigué"],["جائع","jāʾiʿ","affamé"],["عطشان","ʿaṭshān","assoiffé"],
+["جميل","jamīl","beau"],["كبير","kabīr","grand"],["صغير","ṣaghīr","petit"],["جديد","jadīd","nouveau"],["قديم","qadīm","ancien"],["سهل","sahl","facile"],["صعب","ṣaʿb","difficile"]]},
+{id:"questions",t:"Mots pour questionner",a:"أدوات الاستفهام",w:[
+["هل","hal","est-ce que (question oui ou non)"],["ماذا","mādhā","quoi, que"],["من","man","qui"],["أين","ayna","où"],["متى","matā","quand"],["كيف","kayfa","comment"],["لماذا","limādhā","pourquoi"],["كم","kam","combien"]]},
+{id:"phrases",t:"Phrases utiles en voyage",a:"عبارات مفيدة",w:[
+["لا أفهم","lā afham","je ne comprends pas"],["تكلم ببطء من فضلك","takallam bi-buṭʾ min faḍlik","parle lentement, s’il te plaît"],["هل تتكلم الإنجليزية؟","hal tatakallamu l-injilīziyya?","parlez-vous anglais ?"],
+["أين دورة المياه؟","ayna dawrat al-miyāh?","où sont les toilettes ?"],["أنا ضائع","anā ḍāʾiʿ","je suis perdu"],["أحتاج إلى مساعدة","aḥtāju ilā musāʿada","j’ai besoin d’aide"],
+["أين السفارة؟","ayna s-sifāra?","où est l’ambassade ?"],["لا مشكلة","lā mushkila","pas de problème"],["ممتاز","mumtāz","excellent"],["إن شاء الله","in shāʾa llāh","si Dieu le veut"],["بالتوفيق","bi-t-tawfīq","bonne chance"],["تشرفنا","tasharrafnā","enchanté"]]}
+];
+var VTOTAL=VOC.reduce(function(n,c){return n+c.w.length},0);
+
+/* ---------- Données : grammaire ---------- */
+function ex(rows,h){
+  return '<div class="scroll-x"><table><thead><tr><th style="text-align:right">Arabe</th><th>Prononciation</th><th>'+(h||"Français")+'</th></tr></thead><tbody>'+
+  rows.map(function(r){return '<tr><td class="ar" lang="ar" dir="rtl">'+r[0]+'</td><td class="tr">'+r[1]+'</td><td>'+r[2]+'</td></tr>'}).join("")+'</tbody></table></div>';
+}
+function tip(t){return '<div class="tip"><b>À retenir.</b> '+t+'</div>'}
+var GR=[
+{id:"g1",t:"Les pronoms personnels",a:"الضمائر",b:function(){return "<p>Le pronom sujet est facultatif avec un verbe, mais indispensable dans une phrase sans verbe. À la 2e et à la 3e personne, l’arabe distingue le masculin du féminin.</p>"+ex([
+["أَنَا","ana","je"],["أَنْتَ","anta","tu (masculin)"],["أَنْتِ","anti","tu (féminin)"],["هُوَ","huwa","il"],["هِيَ","hiya","elle"],
+["نَحْنُ","naḥnu","nous"],["أَنْتُمْ","antum","vous (masculin)"],["أَنْتُنَّ","antunna","vous (féminin)"],["هُمْ","hum","ils"],["هُنَّ","hunna","elles"]])+tip("L’arabe a aussi un duel (exactement deux personnes). Il fait l’objet de la leçon 16.")}},
+{id:"g2",t:"La phrase nominale",a:"الجملة الاسمية",b:function(){return "<p>Au présent, le verbe « être » n’existe pas. On place simplement le sujet puis ce qu’on en dit.</p>"+ex([
+["أنا طالب","ana ṭālib","Je suis étudiant"],["هي طالبة","hiya ṭāliba","Elle est étudiante"],["أنت معلم","anta muʿallim","Tu es enseignant"],["البيت كبير","al-bayt kabīr","La maison est grande"],["نحن في المدرسة","naḥnu fī l-madrasa","Nous sommes à l’école"]])+tip("Comparez « al-bayt kabīr » (la maison est grande) et « al-bayt al-kabīr » (la grande maison) : un seul ال change tout.")}},
+{id:"g3",t:"L’article défini ال",a:"أل التعريف",b:function(){return "<p>L’arabe n’a pas d’article indéfini : <i>kitāb</i> signifie « un livre ». Pour dire « le livre », on colle ال devant le nom. Devant les 14 lettres solaires, le lām ne se prononce pas et la lettre suivante est doublée.</p>"+ex([
+["كتاب ← الكتاب","kitāb → al-kitāb","livre → le livre"],["قمر ← القمر","qamar → al-qamar","lune → la lune"],["شمس ← الشمس","shams → ash-shams","soleil → le soleil"],["نور ← النور","nūr → an-nūr","lumière → la lumière"],["رجل ← الرجل","rajul → ar-rajul","homme → l’homme"]])+
+  '<div class="two"><div class="panel deep"><b>Lettres solaires (14)</b><div class="ar" style="font-size:26px;color:var(--gold)" lang="ar" dir="rtl">ت ث د ذ ر ز س ش ص ض ط ظ ل ن</div></div><div class="panel deep"><b>Lettres lunaires (14)</b><div class="ar" style="font-size:26px;color:var(--gold)" lang="ar" dir="rtl">ا ب ج ح خ ع غ ف ق ك م ه و ي</div></div></div>'+tip("On écrit toujours ال, mais on dit ash-shams et non al-shams.")}},
+{id:"g4",t:"Masculin et féminin",a:"المذكر والمؤنث",b:function(){return "<p>La plupart des noms et adjectifs féminins se terminent par ة (tāʾ marbūṭa), prononcée « -a ». Il suffit de l’ajouter au masculin.</p>"+ex([
+["طالب ← طالبة","ṭālib → ṭāliba","étudiant → étudiante"],["معلم ← معلمة","muʿallim → muʿallima","enseignant → enseignante"],["كبير ← كبيرة","kabīr → kabīra","grand → grande"],["جديد ← جديدة","jadīd → jadīda","nouveau → nouvelle"],["صغير ← صغيرة","ṣaghīr → ṣaghīra","petit → petite"]])+tip("Quelques mots féminins n’ont pas de ة, par exemple أم (umm, mère) et شمس (shams, soleil). Apprenez-les avec leur genre.")}},
+{id:"g5",t:"Le pluriel",a:"الجمع",b:function(){return "<p>Il existe trois façons de former le pluriel : le pluriel masculin sain (-ūn / -īn), le pluriel féminin sain (-āt) et le pluriel « brisé », qui change la forme interne du mot.</p>"+ex([
+["معلم ← معلمون","muʿallim → muʿallimūn","enseignant → enseignants"],["معلمة ← معلمات","muʿallima → muʿallimāt","enseignante → enseignantes"],["كتاب ← كتب","kitāb → kutub","livre → livres"],["بيت ← بيوت","bayt → buyūt","maison → maisons"],["ولد ← أولاد","walad → awlād","garçon → garçons"],["مدينة ← مدن","madīna → mudun","ville → villes"]])+tip("Le pluriel brisé s’apprend avec le mot. Un pluriel de choses s’accorde au féminin singulier : al-kutub kabīra (les livres sont grands).")}},
+{id:"g6",t:"L’adjectif",a:"الصفة",b:function(){return "<p>L’adjectif se place après le nom et s’accorde avec lui en genre, en nombre et en défini : si le nom porte ال, l’adjectif aussi.</p>"+ex([
+["بيت كبير","bayt kabīr","une grande maison"],["البيت الكبير","al-bayt al-kabīr","la grande maison"],["مدينة كبيرة","madīna kabīra","une grande ville"],["المدينة الكبيرة","al-madīna al-kabīra","la grande ville"],["كتاب جديد","kitāb jadīd","un nouveau livre"]])}},
+{id:"g7",t:"L’annexion (idāfa)",a:"الإضافة",b:function(){return "<p>Pour dire « le X de Y », on place deux noms l’un après l’autre, sans petit mot comme « de ».</p>"+ex([
+["كتاب الطالب","kitāb aṭ-ṭālib","le livre de l’étudiant"],["بيت المعلم","bayt al-muʿallim","la maison de l’enseignant"],["مفتاح السيارة","miftāḥ as-sayyāra","la clé de la voiture"],["اسم المدينة","ism al-madīna","le nom de la ville"]])+tip("Le premier nom ne prend jamais ال. Le second est défini.")}},
+{id:"g8",t:"Les possessifs",a:"ضمائر الملكية",b:function(){return "<p>« Mon », « ton », « son »… sont des suffixes collés au nom.</p>"+ex([
+["كتابي","kitābī","mon livre"],["كتابك","kitābuka","ton livre (masculin)"],["كتابكِ","kitābuki","ton livre (féminin)"],["كتابه","kitābuhu","son livre (à lui)"],["كتابها","kitābuhā","son livre (à elle)"],["كتابنا","kitābunā","notre livre"],["كتابهم","kitābuhum","leur livre"]])}},
+{id:"g9",t:"Les démonstratifs",a:"أسماء الإشارة",b:function(){return "<p>Ce, cette, ceci : <i>hādhā</i> pour le masculin, <i>hādhihi</i> pour le féminin. Suivis d’un nom sans ال, ils signifient « c’est ». Suivis d’un nom avec ال, ils signifient « ce / cette ».</p>"+ex([
+["هذا كتاب","hādhā kitāb","c’est un livre"],["هذه سيارة","hādhihi sayyāra","c’est une voiture"],["هذا الكتاب جديد","hādhā l-kitāb jadīd","ce livre est nouveau"],["هذه المدينة كبيرة","hādhihi l-madīna kabīra","cette ville est grande"],["ذلك البيت قديم","dhālika l-bayt qadīm","cette maison-là est ancienne"],["تلك الحقيبة","tilka l-ḥaqība","ce sac-là"]])}},
+{id:"g10",t:"Les prépositions",a:"حروف الجر",b:function(){return "<p>Les prépositions courantes se placent devant le nom. Pour dire « avoir », l’arabe emploie ʿinda (chez) : « chez moi, un livre ».</p>"+ex([
+["في المدينة","fī l-madīna","dans la ville"],["من فرنسا","min Faransā","de France"],["إلى المطار","ilā l-maṭār","vers l’aéroport"],["على الطاولة","ʿalā ṭ-ṭāwila","sur la table"],["مع صديقي","maʿa ṣadīqī","avec mon ami"],["عندي كتاب","ʿindī kitāb","j’ai un livre"]])}},
+{id:"g11",t:"Le passé",a:"الفعل الماضي",b:function(){return "<p>Le passé se forme en ajoutant des suffixes à la forme de base du verbe. Exemple avec كَتَبَ (kataba, écrire).</p>"+ex([
+["كَتَبْتُ","katabtu","j’ai écrit"],["كَتَبْتَ","katabta","tu as écrit (masculin)"],["كَتَبْتِ","katabti","tu as écrit (féminin)"],["كَتَبَ","kataba","il a écrit"],["كَتَبَتْ","katabat","elle a écrit"],["كَتَبْنَا","katabnā","nous avons écrit"],["كَتَبْتُمْ","katabtum","vous avez écrit"],["كَتَبُوا","katabū","ils ont écrit"]])}},
+{id:"g12",t:"Le présent",a:"الفعل المضارع",b:function(){return "<p>Le présent se forme avec un préfixe (et parfois un suffixe). Même verbe : أَكْتُبُ.</p>"+ex([
+["أَكْتُبُ","aktubu","j’écris"],["تَكْتُبُ","taktubu","tu écris (masculin)"],["تَكْتُبِينَ","taktubīna","tu écris (féminin)"],["يَكْتُبُ","yaktubu","il écrit"],["تَكْتُبُ","taktubu","elle écrit"],["نَكْتُبُ","naktubu","nous écrivons"],["تَكْتُبُونَ","taktubūna","vous écrivez"],["يَكْتُبُونَ","yaktubūna","ils écrivent"]])+tip("Pour le futur, on ajoute سَ devant le présent : سَأَكْتُبُ (sa-aktubu), « j’écrirai ».")}},
+{id:"g13",t:"Les racines de trois lettres",a:"الجذر",b:function(){return "<p>Presque tous les mots arabes viennent d’une racine de trois consonnes qui porte le sens général. Reconnaître la racine permet de deviner beaucoup de mots.</p>"+ex([
+["ك-ت-ب","k-t-b","l’idée d’écrire"],["كتاب","kitāb","livre"],["كاتب","kātib","écrivain"],["مكتب","maktab","bureau"],["مكتبة","maktaba","bibliothèque, librairie"],["د-ر-س","d-r-s","l’idée d’étudier"],["درس","dars","leçon"],["مدرسة","madrasa","école"],["مدرس","mudarris","professeur"]])}},
+{id:"g14",t:"La négation",a:"النفي",b:function(){return "<p>Selon le type de phrase, on utilise un mot de négation différent : <i>lā</i> avec le présent, <i>mā</i> avec le passé, <i>laysa</i> dans une phrase nominale.</p>"+ex([
+["لا أفهم","lā afham","je ne comprends pas"],["ما فهمتُ","mā fahimtu","je n’ai pas compris"],["لا أعرف","lā aʿrif","je ne sais pas"],["لستُ طالبا","lastu ṭāliban","je ne suis pas étudiant"],["لا أتكلم العربية","lā atakallamu l-ʿarabiyya","je ne parle pas arabe"]])}},
+{id:"g15",t:"Poser des questions",a:"أدوات الاستفهام",b:function(){return "<p>Pour une question dont la réponse est oui ou non, on place <i>hal</i> au début de la phrase. Les autres mots interrogatifs se placent aussi en tête.</p>"+ex([
+["هل تتكلم الفرنسية؟","hal tatakallamu l-faransiyya?","Parles-tu français ?"],["ما اسمك؟","mā ismuka?","Comment t’appelles-tu ?"],["أين الفندق؟","ayna l-funduq?","Où est l’hôtel ?"],["من هذا؟","man hādhā?","Qui est-ce ?"],["متى تسافر؟","matā tusāfir?","Quand voyages-tu ?"],["كيف حالك؟","kayfa ḥāluka?","Comment vas-tu ?"],["لماذا تدرس العربية؟","limādhā tadrusu l-ʿarabiyya?","Pourquoi étudies-tu l’arabe ?"],["كم الساعة؟","kam as-sāʿa?","Quelle heure est-il ?"]])+tip("hal = oui/non · mā, mādhā = quoi · man = qui · ayna = où · matā = quand · kayfa = comment · limādhā = pourquoi · kam = combien.")}},
+
+/* Niveau 2 */
+{id:"g16",t:"Le duel",a:"المثنى",b:function(){return "<p>Pour désigner exactement deux personnes ou deux choses, l’arabe ajoute la terminaison -ān (ـان). Le chiffre « deux » devient inutile. À la forme oblique (après une préposition, ou comme complément), la terminaison devient -ayn (ـين).</p>"+ex([
+["كتاب ← كتابان","kitāb → kitābān","un livre → deux livres"],["بيت ← بيتان","bayt → baytān","une maison → deux maisons"],["يد ← يدان","yad → yadān","une main → deux mains"],["مدرسة ← مدرستان","madrasa → madrastān","une école → deux écoles"],["في كتابين","fī kitābayn","dans deux livres"],["أنتما","antumā","vous deux"],["هما","humā","eux deux, elles deux"]])+tip("Pour un nom féminin en ة, la lettre devient ت devant la terminaison : madrasa → madrastān.")}},
+{id:"g17",t:"La phrase verbale et l’ordre des mots",a:"الجملة الفعلية",b:function(){return "<p>La phrase verbale commence par le verbe, puis vient le sujet. Quand le sujet est nommé après le verbe, le verbe reste au singulier et s’accorde seulement en genre. Si le sujet passe avant le verbe, le verbe s’accorde aussi en nombre.</p>"+ex([
+["ذهب الطالب","dhahaba ṭ-ṭālib","l’étudiant est parti"],["ذهبت الطالبة","dhahabat aṭ-ṭāliba","l’étudiante est partie"],["ذهب الطلاب","dhahaba ṭ-ṭullāb","les étudiants sont partis"],["الطلاب ذهبوا","aṭ-ṭullāb dhahabū","les étudiants, ils sont partis"],["يدرس الطالب العربية","yadrusu ṭ-ṭālib al-ʿarabiyya","l’étudiant étudie l’arabe"],["قرأت سارة الكتاب","qaraʾat Sāra l-kitāb","Sara a lu le livre"]])+tip("Ordre habituel : verbe, sujet, complément. L’ordre « sujet, verbe » met le sujet en avant, comme une mise en relief en français.")}},
+{id:"g18",t:"Les nombres au-delà de 10",a:"الأعداد",b:function(){return "<p>Les nombres 1 et 2 s’accordent comme des adjectifs. De 3 à 10, le nombre prend le genre opposé à celui du nom, et le nom se met au pluriel. De 11 à 99, le nom reste au singulier.</p>"+ex([
+["كتاب واحد","kitāb wāḥid","un livre"],["بنت واحدة","bint wāḥida","une fille"],["ثلاثة كتب","thalāthat kutub","trois livres"],["ثلاث بنات","thalāth banāt","trois filles"],["خمسة أيام","khamsat ayyām","cinq jours"],["أحد عشر كتابا","aḥada ʿashara kitāban","onze livres"],["عشرون طالبا","ʿishrūn ṭāliban","vingt étudiants"],["مئة سنة","miʾat sana","cent ans"]])+ex([
+["اثنا عشر","ithnā ʿashar","12"],["خمسة عشر","khamsata ʿashar","15"],["عشرون","ʿishrūn","20"],["ثلاثون","thalāthūn","30"],["أربعون","arbaʿūn","40"],["خمسون","khamsūn","50"],["ستون","sittūn","60"],["سبعون","sabʿūn","70"],["ثمانون","thamānūn","80"],["تسعون","tisʿūn","90"],["مئة","miʾa","100"],["ألف","alf","1000"]],"Nombre")+tip("La règle de la polarité (3 à 10) surprend toujours au début : kitāb est masculin, mais on dit thalāthat kutub, avec le ة du féminin.")}},
+{id:"g19",t:"Les trois cas",a:"الإعراب",b:function(){return "<p>L’arabe écrit possède trois cas, marqués par la voyelle finale du mot : le nominatif (-u) pour le sujet, l’accusatif (-a) pour le complément d’objet, le génitif (-i) après une préposition ou dans l’annexion. Au sens indéfini, la voyelle est doublée (tanwīn).</p>"+ex([
+["كِتَابٌ","kitābun","un livre (nominatif)"],["كِتَابًا","kitāban","un livre (accusatif)"],["كِتَابٍ","kitābin","un livre (génitif)"],["الطَّالِبُ جَدِيدٌ","aṭ-ṭālibu jadīdun","l’étudiant est nouveau"],["رَأَيْتُ الطَّالِبَ","raʾaytu ṭ-ṭāliba","j’ai vu l’étudiant"],["فِي الْبَيْتِ","fī l-bayti","dans la maison"],["كِتَابُ الطَّالِبِ","kitābu ṭ-ṭālibi","le livre de l’étudiant"]])+tip("À l’oral courant, on ne prononce presque jamais ces voyelles finales. Elles restent écrites dans les textes vocalisés (Coran, manuels) et lues dans les discours formels.")}},
+{id:"g20",t:"Le verbe « être » : kāna",a:"كان وأخواتها",b:function(){return "<p>Le verbe كان (kāna, être) met une phrase nominale au passé ou au futur. L’attribut passe alors à l’accusatif. Suivi d’un présent, il exprime l’habitude ou l’imparfait.</p>"+ex([
+["كنت في باريس","kuntu fī Bārīs","j’étais à Paris"],["كان الجو جميلا","kāna l-jaww jamīlan","il faisait beau"],["كانت المدينة كبيرة","kānat al-madīna kabīra","la ville était grande"],["كانوا طلابا","kānū ṭullāban","ils étaient étudiants"],["كان يدرس العربية","kāna yadrusu l-ʿarabiyya","il étudiait l’arabe"],["سأكون هناك غدا","sa-akūnu hunāka ghadan","je serai là-bas demain"],["أصبح معلما","aṣbaḥa muʿalliman","il est devenu enseignant"]])+tip("Passé de kāna : kuntu, kunta, kunti, kāna, kānat, kunnā, kuntum, kānū. Le verbe « devenir » (aṣbaḥa) se construit de la même façon.")}},
+{id:"g21",t:"Le futur et la négation du passé",a:"المستقبل والنفي",b:function(){return "<p>Pour le futur, on place سـ (sa-) ou سوف (sawfa) devant le présent. La négation du futur est لن (lan), suivie du subjonctif. Pour nier le passé, on emploie لم (lam) suivie du présent à la forme dite jussive, c’est-à-dire sans sa voyelle finale.</p>"+ex([
+["سأذهب غدا","sa-adhhabu ghadan","j’irai demain"],["سوف نسافر","sawfa nusāfiru","nous voyagerons"],["لن أذهب","lan adhhaba","je n’irai pas"],["لن أنسى","lan ansā","je n’oublierai pas"],["لم أذهب","lam adhhab","je ne suis pas allé"],["لم يفهم","lam yafham","il n’a pas compris"],["قد وصل","qad waṣala","il est bel et bien arrivé"]])+tip("lā + présent : négation du présent. lam + présent : négation du passé. lan + présent : négation du futur.")}},
+{id:"g22",t:"L’impératif",a:"الأمر",b:function(){return "<p>L’impératif se forme à partir du présent : on retire le préfixe de la 2e personne et, si le mot commence par deux consonnes, on ajoute une voyelle d’appui. Le féminin ajoute -ī, le pluriel masculin -ū. Pour interdire, on dit لا + présent.</p>"+ex([
+["اكتب","uktub","écris (masculin)"],["اكتبي","uktubī","écris (féminin)"],["اكتبوا","uktubū","écrivez"],["اذهب","idhhab","va"],["اقرأ","iqraʾ","lis"],["اسمع","ismaʿ","écoute"],["اجلس","ijlis","assieds-toi"],["تعال","taʿāla","viens"],["لا تكتب","lā taktub","n’écris pas"],["لا تذهب","lā tadhhab","ne pars pas"]])+tip("Pour inviter poliment, on dit تفضل (tafaḍḍal) : « je vous en prie, entrez, servez-vous ».")}},
+
+/* Niveau 3 */
+{id:"g23",t:"Les verbes dérivés",a:"الأوزان",b:function(){return "<p>À partir d’une même racine, l’arabe fabrique des « formes » de verbes qui ajoutent un sens : intensité, échange, réflexivité, demande. Elles se numérotent de I à X en chiffres romains.</p>"+ex([
+["كَتَبَ","kataba","forme I : écrire"],["عَلَّمَ","ʿallama","forme II : enseigner"],["سَافَرَ","sāfara","forme III : voyager"],["أَرْسَلَ","arsala","forme IV : envoyer"],["تَعَلَّمَ","taʿallama","forme V : apprendre"],["تَعَاوَنَ","taʿāwana","forme VI : coopérer"],["اِنْكَسَرَ","inkasara","forme VII : se casser"],["اِجْتَمَعَ","ijtamaʿa","forme VIII : se réunir"],["اِسْتَخْدَمَ","istakhdama","forme X : utiliser"]])+tip("Les formes II et V vont souvent ensemble : ʿallama (enseigner) et taʿallama (apprendre) viennent de la racine ʿ-l-m, l’idée de savoir.")}},
+{id:"g24",t:"Participes et noms dérivés",a:"المشتقات",b:function(){return "<p>De la même racine, on tire le participe actif (celui qui fait), le participe passif (ce qui subit), ainsi que des noms de lieu et d’outil.</p>"+ex([
+["كاتب","kātib","celui qui écrit, écrivain (modèle fāʿil)"],["ذاهب","dhāhib","qui va, qui part"],["طالب","ṭālib","qui demande, étudiant"],["مكتوب","maktūb","écrit (modèle mafʿūl)"],["مفهوم","mafhūm","compris"],["مطلوب","maṭlūb","demandé, recherché"],["مكتب","maktab","bureau, lieu où l’on écrit (modèle mafʿal)"],["مطعم","maṭʿam","restaurant, lieu où l’on mange"],["مفتاح","miftāḥ","clé, outil pour ouvrir (modèle mifʿāl)"]])+tip("Reconnaître ces modèles permet de deviner le sens de beaucoup de mots nouveaux.")}},
+{id:"g25",t:"Les propositions relatives",a:"الاسم الموصول",b:function(){return "<p>Le pronom relatif s’emploie seulement après un nom défini : الذي (alladhī) au masculin singulier, التي (allatī) au féminin singulier, الذين (alladhīna) au masculin pluriel. Si le relatif est complément d’objet, on ajoute à la fin du verbe un pronom suffixe qui rappelle le nom.</p>"+ex([
+["الطالب الذي يدرس العربية","aṭ-ṭālib alladhī yadrusu l-ʿarabiyya","l’étudiant qui étudie l’arabe"],["الكتاب الذي كتبته","al-kitāb alladhī katabtuhu","le livre que j’ai écrit"],["المدينة التي زرتها","al-madīna allatī zurtuhā","la ville que j’ai visitée"],["الطلاب الذين نجحوا","aṭ-ṭullāb alladhīna najaḥū","les étudiants qui ont réussi"],["كتاب قرأته","kitābun qaraʾtuhu","un livre que j’ai lu"]])+tip("Après un nom indéfini, il n’y a pas de pronom relatif : kitābun qaraʾtuhu, littéralement « un livre, je l’ai lu ».")}},
+{id:"g26",t:"Subordonnées : que, parce que, si",a:"الجمل المركبة",b:function(){return "<p>Quelques mots suffisent pour lier deux idées : أنّ (anna, que), لأنّ (li-anna, parce que), إذا (idhā, si) et لو (law, si, pour l’irréel). Après أن (an, que, pour que), le verbe est au subjonctif.</p>"+ex([
+["أعرف أنك طالب","aʿrifu annaka ṭālib","je sais que tu es étudiant"],["أدرس العربية لأنني أحبها","adrusu l-ʿarabiyya li-annanī uḥibbuhā","j’étudie l’arabe parce que je l’aime"],["أريد أن أتعلم","urīdu an ataʿallama","je veux apprendre"],["يجب أن تذهب","yajibu an tadhhaba","il faut que tu ailles"],["إذا درست نجحت","idhā darasta najaḥta","si tu étudies, tu réussiras"],["لو كنت غنيا لسافرت","law kunta ghaniyyan la-sāfarta","si tu étais riche, tu voyagerais"]])+tip("idhā exprime une condition réaliste. law exprime une condition irréelle, et son résultat commence souvent par la- : la-sāfarta.")}},
+{id:"g27",t:"Comparatif et superlatif",a:"أفعل التفضيل",b:function(){return "<p>Le comparatif et le superlatif partagent un modèle unique, aʿfal (أفعل), qui ne varie pas en genre au comparatif. On compare avec من (min, que).</p>"+ex([
+["كبير ← أكبر","kabīr → akbar","grand → plus grand"],["صغير ← أصغر","ṣaghīr → aṣghar","petit → plus petit"],["جميل ← أجمل","jamīl → ajmal","beau → plus beau"],["سهل ← أسهل","sahl → ashal","facile → plus facile"],["صعب ← أصعب","ṣaʿb → aṣʿab","difficile → plus difficile"],["هذا البيت أكبر من ذلك","hādhā l-bayt akbar min dhālika","cette maison est plus grande que celle-là"],["هو أطول من أخيه","huwa aṭwal min akhīhi","il est plus grand que son frère"],["أجمل مدينة","ajmalu madīna","la plus belle ville"]])+tip("Pour le superlatif, on place le comparatif devant un nom indéfini singulier : ajmalu madīna, « la plus belle ville ».")}},
+{id:"g28",t:"Le passif",a:"المبني للمجهول",b:function(){return "<p>Le passif change les voyelles internes du verbe et passe sous silence l’auteur de l’action. Au passé, le modèle est fuʿila ; au présent, yufʿalu. Le sujet grammatical est alors celui qui subit l’action.</p>"+ex([
+["كُتِبَ الكتاب","kutiba l-kitāb","le livre a été écrit"],["يُكْتَبُ الكتاب","yuktabu l-kitāb","le livre est écrit"],["فُتِحَ الباب","futiḥa l-bāb","la porte a été ouverte"],["يُقَالُ","yuqālu","on dit"],["سُئِلَ","suʾila","il a été interrogé"],["وُلِدَ في المغرب","wulida fī l-Maghrib","il est né au Maroc"]])+tip("« Il est né » se dit au passif : wulida. La presse écrite emploie beaucoup le passif, ce qui le rend utile pour lire les journaux.")}},
+{id:"g29",t:"Pluriels brisés : les modèles",a:"جموع التكسير",b:function(){return "<p>Les pluriels brisés suivent des modèles. En reconnaître quelques-uns aide à deviner le pluriel d’un mot nouveau.</p>"+ex([
+["رجل ← رجال","rajul → rijāl","modèle fiʿāl : homme → hommes"],["جبل ← جبال","jabal → jibāl","modèle fiʿāl : montagne → montagnes"],["كتاب ← كتب","kitāb → kutub","modèle fuʿul : livre → livres"],["مدينة ← مدن","madīna → mudun","modèle fuʿul : ville → villes"],["بيت ← بيوت","bayt → buyūt","modèle fuʿūl : maison → maisons"],["ولد ← أولاد","walad → awlād","modèle afʿāl : garçon → garçons"],["يوم ← أيام","yawm → ayyām","modèle afʿāl : jour → jours"],["رسالة ← رسائل","risāla → rasāʾil","modèle faʿāʾil : lettre → lettres"],["مفتاح ← مفاتيح","miftāḥ → mafātīḥ","modèle mafāʿīl : clé → clés"]])+tip("Quand le modèle est incertain, vérifiez dans un dictionnaire : le pluriel est indiqué à côté du mot.")}},
+{id:"g30",t:"Relier les phrases",a:"أدوات الربط",b:function(){return "<p>Pour écrire ou raconter, on enchaîne les idées avec des mots de liaison : و (wa, et), ثم (thumma, puis), لكن (lākin, mais), أو (aw, ou), أيضا (ayḍan, aussi), لذلك (li-dhālika, c’est pourquoi), بعد (baʿda, après), قبل (qabla, avant), عندما (ʿindamā, quand).</p>"+ex([
+["ذهبت إلى السوق ثم رجعت إلى البيت","dhahabtu ilā s-sūq thumma rajaʿtu ilā l-bayt","je suis allé au marché, puis je suis rentré"],["أحب القهوة لكن لا أحب الشاي","uḥibbu l-qahwa lākin lā uḥibbu sh-shāy","j’aime le café mais je n’aime pas le thé"],["أتكلم الفرنسية والعربية","atakallamu l-faransiyya wa-l-ʿarabiyya","je parle français et arabe"],["بعد الدرس أقرأ كتابا","baʿda d-dars aqraʾu kitāban","après la leçon, je lis un livre"],["قبل السفر اشتريت تذكرة","qabla s-safar ishtaraytu tadhkira","avant le voyage, j’ai acheté un billet"],["عندما وصلت كان الجو باردا","ʿindamā waṣaltu kāna l-jaww bāridan","quand je suis arrivé, il faisait froid"],["لذلك أحتاج إلى معطف","li-dhālika aḥtāju ilā miʿṭaf","c’est pourquoi j’ai besoin d’un manteau"]])+tip("Le و (wa) se colle au mot suivant : wa-l-ʿarabiyya, « et l’arabe ». Entraînez-vous à raconter votre journée avec trois ou quatre de ces mots.")}}
+];
+
+/* ---------- Données : dialogues ---------- */
+var DLG=[
+{t:"Se présenter",a:"التعارف",sit:"Deux personnes se rencontrent pour la première fois.",who:["Karim","Sara"],l:[
+[0,"السلام عليكم","as-salāmu ʿalaykum","La paix soit sur vous."],
+[1,"وعليكم السلام. ما اسمك؟","wa ʿalaykumu s-salām. mā ismuka?","Et sur vous la paix. Comment t’appelles-tu ?"],
+[0,"اسمي كريم. وما اسمك؟","ismī Karīm. wa mā ismuki?","Je m’appelle Karim. Et toi ?"],
+[1,"اسمي سارة. تشرفنا.","ismī Sāra. tasharrafnā.","Je m’appelle Sara. Enchantée."],
+[0,"أنا من فرنسا. من أين أنتِ؟","anā min Faransā. min ayna anti?","Je viens de France. D’où viens-tu ?"],
+[1,"أنا من المغرب.","anā min al-Maghrib.","Je viens du Maroc."]]},
+{t:"Au café",a:"في المقهى",sit:"Un client commande une boisson.",who:["Serveur","Client"],l:[
+[0,"أهلا وسهلا. ماذا تريد؟","ahlan wa sahlan. mādhā turīd?","Bienvenue. Que désirez-vous ?"],
+[1,"أريد قهوة من فضلك.","urīdu qahwa min faḍlik.","Je voudrais un café, s’il vous plaît."],
+[0,"هل تريد سكرا؟","hal turīdu sukkaran?","Voulez-vous du sucre ?"],
+[1,"لا، شكرا. بدون سكر.","lā, shukran. bidūn sukkar.","Non, merci. Sans sucre."],
+[0,"تفضل.","tafaḍḍal.","Voilà, je vous en prie."],
+[1,"شكرا. كم الحساب؟","shukran. kam al-ḥisāb?","Merci. C’est combien ?"],
+[0,"خمسة دراهم.","khamsat darāhim.","Cinq dirhams."]]},
+{t:"À l’hôtel",a:"في الفندق",sit:"Un voyageur arrive à la réception.",who:["Réception","Voyageur"],l:[
+[0,"مرحبا بك في الفندق.","marḥaban bika fī l-funduq.","Bienvenue à l’hôtel."],
+[1,"عندي حجز باسم أحمد.","ʿindī ḥajz bi-ismi Aḥmad.","J’ai une réservation au nom d’Ahmed."],
+[0,"جواز السفر من فضلك.","jawāz as-safar min faḍlik.","Votre passeport, s’il vous plaît."],
+[1,"تفضل.","tafaḍḍal.","Voici."],
+[0,"غرفتك في الطابق الثاني.","ghurfatuka fī ṭ-ṭābiq ath-thānī.","Votre chambre est au deuxième étage."],
+[1,"شكرا جزيلا.","shukran jazīlan.","Merci beaucoup."]]},
+{t:"Demander son chemin",a:"السؤال عن الطريق",sit:"Un touriste cherche la gare.",who:["Touriste","Passant"],l:[
+[0,"عفوا، أين المحطة؟","ʿafwan, ayna l-maḥaṭṭa?","Excusez-moi, où est la gare ?"],
+[1,"المحطة قريبة. اذهب مباشرة.","al-maḥaṭṭa qarība. idhhab mubāsharatan.","La gare est proche. Va tout droit."],
+[0,"ثم ماذا؟","thumma mādhā?","Et ensuite ?"],
+[1,"انعطف يمينا.","inʿaṭif yamīnan.","Tourne à droite."],
+[0,"شكرا لك.","shukran lak.","Merci à toi."],
+[1,"لا شكر على واجب.","lā shukra ʿalā wājib.","Il n’y a pas de quoi."]]}
+];
+
+/* ---------- Navigation ---------- */
+var TABS=[["accueil","ابدأ","Accueil"],["alphabet","حروف","Alphabet"],["grammaire","نحو","Grammaire"],["vocabulaire","كلمات","Vocabulaire"],["dialogues","حوار","Dialogues"],["quiz","اختبار","Quiz"]];
+$("#nav").innerHTML=TABS.map(function(t){return '<button data-go="'+t[0]+'"><span class="nav-ar" lang="ar" dir="rtl">'+t[1]+'</span><span class="nav-fr">'+t[2]+'</span></button>'}).join("");
+function show(id,noScroll){
+  closeLetter();
+  var ok=id==="reglages";TABS.forEach(function(t){if(t[0]===id)ok=true});if(!ok)id="accueil";
+  $$("[data-view]").forEach(function(s){s.hidden=s.getAttribute("data-view")!==id});
+  $$("#nav button").forEach(function(b){if(b.getAttribute("data-go")===id)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});
+  if(id!=="accueil"&&id!=="reglages"){S.last=id;save()}
+  if(id==="accueil")renderHome();
+  if(id==="reglages")renderSettings();
+  if(!noScroll)window.scrollTo(0,0);
+  try{history.replaceState(null,"","#"+id)}catch(e){}
+}
+
+/* ---------- Progression ---------- */
+function count(o){return Object.keys(o).filter(function(k){return o[k]}).length}
+function lessonsDone(){return count(S.lessons)}
+function knownIn(catId){var c=VOC.filter(function(x){return x.id===catId})[0];var n=0;c.w.forEach(function(w){if(S.words[w[0]])n++});return[n,c.w.length]}
+function ids(a){var n=0;a.forEach(function(i){if(S.lessons[i])n++});return[n,a.length]}
+function bestAny(){var m=0;Object.keys(S.best).forEach(function(k){if(S.best[k]>m)m=S.best[k]});return m}
+function globalPct(){
+  var a=lessonsDone()/GR.length,b=count(S.words)/VTOTAL,c=count(S.letters)/LET.length;
+  return Math.round((a+b+c)/3*100);
+}
+function updateMeter(){var p=globalPct();$("#pct").textContent=p+" %";$("#pbar").style.width=p+"%"}
+function renderHome(){
+  var lw=lessonsDone(),kw=count(S.words),ls=count(S.letters),bq=bestAny();
+  var rs=$("#resume");
+  if(rs){var lab="";TABS.forEach(function(t){if(t[0]===S.last)lab=t[2]});
+    if(lab&&S.last!=="accueil"){rs.hidden=false;rs.setAttribute("data-go",S.last);rs.textContent="Reprendre : "+lab}else rs.hidden=true}
+  $("#stats").innerHTML=[[ls+" / "+LET.length,"lettres découvertes"],[lw+" / "+GR.length,"leçons comprises"],[kw+" / "+VTOTAL,"mots connus"],[bq+" %","meilleur score au quiz"]].map(function(s){return '<div class="stat"><b>'+s[0]+'</b><span>'+s[1]+'</span></div>'}).join("");
+  var steps=[
+    ["Découvrir l’alphabet","Les 28 lettres, leurs formes et leurs sons.",[ls,LET.length],"alphabet"],
+    ["Saluer et se présenter","Les salutations de base et le premier dialogue.",knownIn("salut"),"vocabulaire"],
+    ["Pronoms et phrases simples","Pronoms, phrase nominale, article, genre.",ids(["g1","g2","g3","g4"]),"grammaire"],
+    ["Noms, adjectifs et possession","Pluriel, adjectif, annexion, possessifs, démonstratifs.",ids(["g5","g6","g7","g8","g9"]),"grammaire"],
+    ["Verbes, négation et questions","Passé, présent, racines, négation, interrogation.",ids(["g10","g11","g12","g13","g14","g15"]),"grammaire"],
+    ["Compter et conjuguer plus loin","Duel, ordre des mots, nombres, cas, « être » et futur.",ids(["g16","g17","g18","g19","g20","g21","g22"]),"grammaire"],
+    ["Dériver et relier","Formes dérivées, relatives, comparatif, passif, connecteurs.",ids(["g23","g24","g25","g26","g27","g28","g29","g30"]),"grammaire"],
+    ["Élargir son vocabulaire","Cent mots connus : voyage, santé, ville, métiers…",[Math.min(kw,100),100],"vocabulaire"],
+    ["Parler et vérifier","Dialogues, puis un quiz à 80 % ou plus.",[Math.min(bq,80),80],"quiz"]];
+  $("#path").innerHTML=steps.map(function(s,i){
+    var done=s[2][0]>=s[2][1],pc=Math.round(s[2][0]/s[2][1]*100);
+    return '<li class="'+(done?"done":"")+'"><span class="dot">'+(done?CHK.replace('<svg','<svg width="18" height="18"'):(i+1))+'</span><div><h3>'+s[0]+'</h3><p>'+s[1]+'</p><div class="bar"><span style="width:'+pc+'%"></span></div></div><button class="btn ghost" data-go="'+s[3]+'">Ouvrir</button></li>';
+  }).join("");
+  $$(".spk[data-say]",$("#v-accueil")).forEach(function(b){if(!b.innerHTML)b.innerHTML=SPK});
+  updateMeter();
+}
+
+/* ---------- Alphabet ---------- */
+var curL=0;
+function renderLetter(i){
+  var L=LET[i],f=forms(L[0],L[4]),lab=["Isolée","Initiale","Médiane","Finale"];
+  $("#ldetail").innerHTML='<div class="big" lang="ar" dir="rtl">'+L[0]+'</div><div><div class="eyebrow">Lettre '+(i+1)+' sur 28</div><h3>'+L[1]+' <span class="tr" style="font-size:20px">· '+L[2]+'</span></h3><p class="snd">'+L[3]+'</p>'+
+  '<div class="forms">'+f.map(function(x,k){return '<div><span class="ar" lang="ar" dir="rtl">'+x+'</span><small>'+lab[k]+'</small></div>'}).join("")+'</div>'+
+  (L[4]?'':'<p class="muted" style="margin-top:10px;font-size:14px">Cette lettre ne se lie pas à la lettre suivante : elle laisse un petit espace après elle.</p>')+
+  '<div class="ex">'+ar(L[5])+'<div><b class="tr">'+L[6]+'</b><br><span class="muted">'+L[7]+'</span></div>'+spkBtn(L[5],L[6])+'</div></div>';
+  $$(".spk",$("#ldetail")).forEach(function(){});
+}
+function openLetter(i){
+  curL=((i%LET.length)+LET.length)%LET.length;S.letters[curL]=1;save();
+  renderLetter(curL);renderLGrid();updateMeter();
+  $("#sheet").hidden=false;$("#ldetail").scrollTop=0;
+  try{document.body.style.overflow="hidden"}catch(e){}
+}
+function closeLetter(){
+  var s=$("#sheet");if(s)s.hidden=true;
+  try{document.body.style.overflow=""}catch(e){}
+}
+function renderLGrid(){
+  $("#lgrid").innerHTML=LET.map(function(L,i){return '<button class="lbtn'+(S.letters[i]?" seen":"")+'" data-let="'+i+'" aria-pressed="'+(i===curL)+'"><span class="ar" lang="ar" dir="rtl">'+L[0]+'</span><small>'+L[1]+'</small></button>'}).join("");
+}
+function signCards(list,withSound){
+  return list.map(function(s){return '<div class="sign">'+ar(s[0])+'<div><b>'+s[1]+'</b><span>'+s[2]+(s[3]?' · '+s[3]:'')+'</span></div></div>'}).join("");
+}
+function renderAlphabet(){
+  renderLetter(curL);renderLGrid();
+  $("#signs").innerHTML=signCards(SIGNS);
+  $("#longv").innerHTML=signCards(LONGV.map(function(s){return [s[0],s[1],s[2]]}));
+  $("#othersigns").innerHTML=signCards(OTHER);
+}
+
+/* ---------- Grammaire ---------- */
+var G={lv:0,todo:false};
+function updateGCount(){var el=$("#gcount");if(el)el.textContent=lessonsDone()+" leçons comprises sur "+GR.length}
+function renderGChips(){
+  var L=[[0,"Toutes"],[1,"Niveau 1"],[2,"Niveau 2"],[3,"Niveau 3"]];
+  $("#gchips").innerHTML=L.map(function(x){return '<button class="chip" data-glv="'+x[0]+'" aria-pressed="'+(G.lv===x[0])+'">'+x[1]+'</button>'}).join("")+'<button class="chip" id="gtodo" aria-pressed="'+G.todo+'">À étudier</button>';
+  updateGCount();
+}
+function renderGrammar(){
+  renderGChips();
+  var LV=[["Niveau 1 · Bases","Phrases simples, noms et premiers verbes.",0],["Niveau 2 · Élémentaire","Compter, ordonner la phrase, conjuguer plus loin.",15],["Niveau 3 · Intermédiaire","Dériver des mots, relier des idées, lire des textes.",22]];
+  var lastLv=0;
+  $("#lessons").innerHTML=GR.map(function(g,i){
+    var d=!!S.lessons[g.id],head="",lv=i<15?1:i<22?2:3;
+    if((G.lv&&G.lv!==lv)||(G.todo&&d))return "";
+    if(lv!==lastLv){lastLv=lv;head='<div class="lvhead"><b>'+LV[lv-1][0]+'</b><span>'+LV[lv-1][1]+'</span></div>'}
+    return head+'<details class="lesson'+(d?" done":"")+'" data-l="'+g.id+'"><summary><span class="num">'+(i+1)+'</span><span class="ttl"><b>'+g.t+'</b>'+ar(g.a)+'</span></summary><div class="lbody">'+g.b()+
+    '<div><button class="btn'+(d?" gold":"")+'" data-done="'+g.id+'" aria-pressed="'+d+'">'+(d?"Leçon comprise":"Marquer comme comprise")+'</button></div></div></details>';
+  }).join("")||'<div class="panel">Aucune leçon à afficher avec ce filtre.</div>';
+}
+
+/* ---------- Vocabulaire ---------- */
+var V={cat:"all",q:"",cards:false,hide:false,todo:false,idx:0,flip:false,list:[]};
+function vList(){
+  var q=V.q.trim().toLowerCase(),out=[];
+  VOC.forEach(function(c){
+    if(V.cat!=="all"&&V.cat!==c.id)return;
+    c.w.forEach(function(w){
+      if(V.todo&&S.words[w[0]])return;
+      if(!q||w[0].indexOf(q)>-1||w[1].toLowerCase().indexOf(q)>-1||w[2].toLowerCase().indexOf(q)>-1)out.push({c:c,w:w});
+    });
+  });
+  return out;
+}
+function renderVChips(){
+  var sel=$("#vcat");
+  sel.innerHTML='<option value="all">Tous les thèmes ('+count(S.words)+' / '+VTOTAL+' mots connus)</option>'+VOC.map(function(c){var k=knownIn(c.id);return '<option value="'+c.id+'">'+c.t+' ('+k[0]+' / '+k[1]+')</option>'}).join("");
+  sel.value=V.cat;
+}
+function renderVocab(){
+  renderVChips();
+  $("#vmode").setAttribute("aria-pressed",V.cards);$("#vhide").setAttribute("aria-pressed",V.hide);$("#vtodo").setAttribute("aria-pressed",V.todo);
+  V.list=vList();var out=$("#vout");
+  if(!V.list.length){out.innerHTML='<div class="panel">'+(V.todo&&!V.q.trim()?"Bravo : tous les mots de cette sélection sont connus.":"Aucun mot ne correspond à cette recherche.")+'</div>';return}
+  if(V.cards){
+    if(V.idx>=V.list.length)V.idx=0;
+    var it=V.list[V.idx],w=it.w;
+    out.innerHTML='<div class="qhead"><span>Carte '+(V.idx+1)+' sur '+V.list.length+'</span><span>'+it.c.t+'</span></div>'+
+    '<div class="card">'+ar(w[0])+'<div class="reveal">'+(V.flip?'<div class="tr" style="font-size:20px">'+w[1]+'</div><div class="fr">'+w[2]+'</div>':'<span class="muted">Dites le mot, puis retournez la carte.</span>')+'</div>'+
+    '<div class="cardbar"><button class="btn" data-say="'+w[0]+'">'+SPK.replace('<svg','<svg width="18" height="18"')+' Écouter</button><button class="btn gold" data-flip="1">'+(V.flip?"Masquer":"Retourner")+'</button></div></div>'+
+    '<div class="cardbar"><button class="btn ghost" data-card="prev">Précédent</button><button class="btn" data-card="again">À revoir</button><button class="btn" data-card="know">Je le sais</button><button class="btn ghost" data-card="next">Suivant</button></div>';
+    return;
+  }
+  var html="",last="";
+  V.list.forEach(function(it){
+    if(V.cat==="all"&&it.c.id!==last){last=it.c.id;html+='<div class="catname"><h3>'+it.c.t+'</h3>'+ar(it.c.a)+'</div>'}
+    var w=it.w,k=!!S.words[w[0]];
+    html+='<div class="word">'+ar(w[0])+'<div><div class="fr">'+w[2]+'</div>'+(V.hide?'':'<div class="tr">'+w[1]+'</div>')+'</div>'+spkBtn(w[0],w[1])+
+    '<button class="known" data-know="'+w[0]+'" aria-pressed="'+k+'" aria-label="Mot connu">'+CHK+'</button></div>';
+  });
+  out.innerHTML='<div class="words">'+html+'</div>';
+}
+
+/* ---------- Dialogues ---------- */
+var D={tr:true,fr:true};
+function renderDialogues(){
+  $("#dtr").setAttribute("aria-pressed",D.tr);$("#dfr").setAttribute("aria-pressed",D.fr);
+  $("#dout").className=(D.tr?"":"hide-tr ")+(D.fr?"":"hide-fr");
+  $("#dout").style.cssText="display:flex;flex-direction:column;gap:22px";
+  $("#dout").innerHTML=DLG.map(function(d,di){
+    return '<article class="panel dlg"><div class="dlg-head"><div><div class="eyebrow">Dialogue '+(di+1)+'</div><h3 style="font-size:22px">'+d.t+' '+ar(d.a)+'</h3><p class="muted">'+d.sit+'</p></div>'+
+    '<button class="btn" data-playall="'+di+'">'+SPK.replace('<svg','<svg width="18" height="18"')+' Écouter tout</button></div><div class="chat">'+
+    d.l.map(function(l){return '<div class="line'+(l[0]?" b":"")+'"><div class="bubble"><span class="who">'+d.who[l[0]]+'</span>'+ar(l[1])+'<span class="tr">'+l[2]+'</span><span class="fr">'+l[3]+'</span></div>'+spkBtn(l[1],"cette phrase")+'</div>'}).join("")+'</div></article>';
+  }).join("");
+}
+
+/* ---------- Quiz ---------- */
+var Q=null;
+var MODES=[["arfr","Arabe vers français","Un mot arabe s’affiche : choisissez sa traduction."],["frar","Français vers arabe","Un mot français s’affiche : retrouvez-le en arabe."],["let","Reconnaître les lettres","Une lettre s’affiche : choisissez son nom."]];
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function allWords(){var o=[];VOC.forEach(function(c){c.w.forEach(function(w){o.push({ar:w[0],tr:w[1],fr:w[2]})})});return o}
+function buildQuiz(mode){
+  var qs=[];
+  if(mode==="let"){
+    shuffle(LET).slice(0,10).forEach(function(L){
+      var names=shuffle(LET.filter(function(x){return x[1]!==L[1]})).slice(0,3).map(function(x){return x[1]});
+      var opts=shuffle(names.concat([L[1]]));
+      qs.push({p:L[0],pAr:true,o:opts,oAr:false,c:opts.indexOf(L[1]),n:"Son : "+L[3]+"."});
+    });
+  }else{
+    var W=allWords();
+    shuffle(W).slice(0,10).forEach(function(w){
+      var key=mode==="arfr"?"fr":"ar";
+      var d=[],pool=shuffle(W);
+      for(var i=0;i<pool.length&&d.length<3;i++){var x=pool[i];if(x[key]!==w[key]&&d.indexOf(x[key])<0)d.push(x[key])}
+      var opts=shuffle(d.concat([w[key]]));
+      qs.push({p:mode==="arfr"?w.ar:w.fr,pAr:mode==="arfr",o:opts,oAr:mode==="frar",c:opts.indexOf(w[key]),n:w.ar+" se prononce « "+w.tr+" » et signifie « "+w.fr+" »."});
+    });
+  }
+  return{mode:mode,qs:qs,i:0,score:0,done:false,picked:-1};
+}
+function renderQuiz(){
+  var out=$("#qout");
+  if(!Q){
+    out.innerHTML='<div class="modes">'+MODES.map(function(m){return '<button class="mode" data-mode="'+m[0]+'"><b>'+m[1]+'</b><span>'+m[2]+'</span><em>'+(S.best[m[0]]!=null?"Meilleur score : "+S.best[m[0]]+" %":"Pas encore joué")+'</em></button>'}).join("")+'</div>';
+    return;
+  }
+  if(Q.done){
+    var pc=Math.round(Q.score/Q.qs.length*100);
+    var msg=pc>=80?"Très bien. Passez à la leçon suivante ou changez de mode.":pc>=50?"Bon début. Relisez les mots ratés puis rejouez.":"Pas de souci. Revoyez les cartes de vocabulaire puis réessayez.";
+    out.innerHTML='<div class="panel" style="text-align:center;display:flex;flex-direction:column;gap:12px;align-items:center"><div class="score">'+Q.score+' / '+Q.qs.length+'</div><p style="font-size:18px">'+msg+'</p><div class="cardbar"><button class="btn gold" data-mode="'+Q.mode+'">Rejouer</button><button class="btn" data-mode="menu">Changer de mode</button></div></div>';
+    return;
+  }
+  var q=Q.qs[Q.i],answered=Q.picked>-1;
+  out.innerHTML='<div class="qhead"><span>Question '+(Q.i+1)+' sur '+Q.qs.length+'</span><span>Score : '+Q.score+'</span></div>'+
+  '<div class="qprompt">'+(q.pAr?ar(q.p):'<span class="txt">'+q.p+'</span>')+'</div>'+
+  '<div class="opts">'+q.o.map(function(o,k){
+    var cls="opt"+(q.oAr?" ar":"");
+    if(answered){if(k===q.c)cls+=" ok";else if(k===Q.picked)cls+=" ko"}
+    return '<button class="'+cls+'" data-opt="'+k+'"'+(answered?" disabled":"")+(q.oAr?' lang="ar" dir="rtl"':"")+'>'+o+'</button>';
+  }).join("")+'</div>'+
+  '<div class="fb">'+(answered?'<p><b>'+(Q.picked===q.c?"Exact.":"Pas tout à fait.")+'</b> '+q.n+'</p>':'')+'</div>'+
+  (answered?'<div><button class="btn gold" data-next="1">'+(Q.i+1===Q.qs.length?"Voir le score":"Question suivante")+'</button></div>':'');
+}
+
+/* ---------- Réglages ---------- */
+var SK=[["doux","Bleu doux","Bleu apaisé, le plus reposant le jour","#1F3A5F","#EFCB7C"],["ciel","Bleu ciel","Fond clair teinté de bleu","#CFE6F7","#0B5C8E"],["clair","Clair","Fond presque blanc, pour la pleine lumière","#F2F5F9","#0E5A9C"],["sombre","Sombre","Fond sombre, pour le soir","#10151C","#E8C26B"]];
+var resetAsk=false;
+function renderSettings(){
+  var cur=S.skin||"doux";
+  $("#skins").innerHTML=SK.map(function(k){
+    return '<button class="skin" data-skin="'+k[0]+'" aria-pressed="'+(cur===k[0])+'"><span class="swatch" style="background:'+k[3]+';color:'+k[4]+'" lang="ar" dir="rtl">أب</span><b>'+k[1]+'</b><span class="muted" style="font-size:14px">'+k[2]+'</span></button>';
+  }).join("");
+  $("#setmore").innerHTML=
+    '<div class="panel"><h3>Voix arabe</h3><p class="muted" style="margin-top:6px">Touchez le bouton pour tester la lecture audio.</p><div style="margin-top:12px;display:flex;align-items:center;gap:12px">'+spkBtn("مرحبا","marḥaban")+ar("مرحبا").replace('class="ar"','class="ar" style="font-size:26px;color:var(--gold)"')+'</div><p class="muted" style="margin-top:12px;font-size:14px">Si vous n’entendez rien, vérifiez le volume média, puis ajoutez une voix arabe dans les réglages de synthèse vocale de votre téléphone.</p></div>'+
+    '<div class="panel"><h3>Ma progression</h3><p class="muted" style="margin-top:6px">'+count(S.letters)+' lettres vues, '+lessonsDone()+' leçons comprises, '+count(S.words)+' mots connus.</p>'+
+    (resetAsk?'<p style="margin-top:12px"><b>Effacer toute la progression ?</b> Cette action est définitive.</p><div class="cardbar" style="justify-content:flex-start;margin-top:10px"><button class="btn gold" data-reset="yes">Oui, tout effacer</button><button class="btn" data-reset="no">Annuler</button></div>':'<div style="margin-top:12px"><button class="btn" data-reset="ask">Remettre à zéro</button></div>')+'</div>'+
+    '<div class="panel"><h3>Hors connexion</h3><p class="muted" style="margin-top:6px">Le fichier « staraby-hors-ligne.html » fonctionne sans réseau, avec les polices de votre appareil. Sa progression est séparée de celle de la version en ligne.</p></div>';
+}
+
+/* ---------- Événements ---------- */
+document.addEventListener("click",function(e){
+  if(e.target&&e.target.id==="sheet"){closeLetter();return}
+  var t=e.target.closest("button,a");if(!t)return;
+  var v;
+  if(t.hasAttribute("data-lclose")){closeLetter();return}
+  if(t.hasAttribute("data-lnav")){openLetter(curL+(+t.getAttribute("data-lnav")));return}
+  if((v=t.getAttribute("data-skin"))){S.skin=v;save();applySkin(v);renderSettings();return}
+  if((v=t.getAttribute("data-reset"))){
+    if(v==="ask")resetAsk=true;
+    else if(v==="no")resetAsk=false;
+    else{S.lessons={};S.words={};S.letters={};S.best={};S.last="";save();resetAsk=false;Q=null;renderAlphabet();renderGrammar();renderVocab();renderQuiz();updateMeter();toast("Progression remise à zéro.")}
+    renderSettings();return;
+  }
+  if((v=t.getAttribute("data-go"))){show(v);return}
+  if(t.hasAttribute("data-say")){say(t.getAttribute("data-say"));return}
+  if(t.hasAttribute("data-let")){openLetter(+t.getAttribute("data-let"));return}
+  if((v=t.getAttribute("data-done"))){
+    S.lessons[v]=!S.lessons[v];save();
+    t.setAttribute("aria-pressed",!!S.lessons[v]);t.textContent=S.lessons[v]?"Leçon comprise":"Marquer comme comprise";
+    t.classList.toggle("gold",!!S.lessons[v]);
+    var det=t.closest("details");if(det)det.classList.toggle("done",!!S.lessons[v]);
+    updateMeter();updateGCount();return;
+  }
+  if(t.id==="vtodo"){V.todo=!V.todo;V.idx=0;V.flip=false;renderVocab();return}
+  if(t.hasAttribute("data-glv")){G.lv=+t.getAttribute("data-glv");renderGrammar();return}
+  if(t.id==="gtodo"){G.todo=!G.todo;renderGrammar();return}
+  if(t.id==="vmode"){V.cards=!V.cards;V.idx=0;V.flip=false;renderVocab();return}
+  if(t.id==="vhide"){V.hide=!V.hide;renderVocab();return}
+  if((v=t.getAttribute("data-know"))){S.words[v]=!S.words[v];save();t.setAttribute("aria-pressed",!!S.words[v]);updateMeter();renderVChips();return}
+  if(t.hasAttribute("data-flip")){V.flip=!V.flip;renderVocab();return}
+  if((v=t.getAttribute("data-card"))){
+    var n=V.list.length,cur=V.list[V.idx];
+    if(v==="know"){S.words[cur.w[0]]=1;save();updateMeter()}
+    if(v==="prev")V.idx=(V.idx-1+n)%n;else if(!(v==="know"&&V.todo))V.idx=(V.idx+1)%n;
+    if(v==="know")renderVChips();
+    V.flip=false;renderVocab();return;
+  }
+  if(t.id==="dtr"){D.tr=!D.tr;renderDialogues();return}
+  if(t.id==="dfr"){D.fr=!D.fr;renderDialogues();return}
+  if((v=t.getAttribute("data-playall"))){
+    var d=DLG[+v];try{speechSynthesis.cancel()}catch(x){}
+    d.l.forEach(function(l){say(l[1],true)});return;
+  }
+  if((v=t.getAttribute("data-mode"))){Q=v==="menu"?null:buildQuiz(v);renderQuiz();return}
+  if((v=t.getAttribute("data-opt"))){
+    if(Q.picked>-1)return;Q.picked=+v;if(Q.picked===Q.qs[Q.i].c)Q.score++;renderQuiz();return;
+  }
+  if(t.hasAttribute("data-next")){
+    Q.i++;Q.picked=-1;
+    if(Q.i>=Q.qs.length){Q.done=true;var pc=Math.round(Q.score/Q.qs.length*100);if(S.best[Q.mode]==null||pc>S.best[Q.mode])S.best[Q.mode]=pc;save();updateMeter()}
+    renderQuiz();return;
+  }
+});
+$("#vsearch").addEventListener("input",function(e){V.q=e.target.value;V.idx=0;V.flip=false;renderVocab()});
+$("#vcat").addEventListener("change",function(e){V.cat=e.target.value;V.idx=0;V.flip=false;renderVocab()});
+document.addEventListener("keydown",function(e){if(e.key==="Escape")closeLetter()});
+
+/* ---------- Démarrage ---------- */
+$$(".spk[data-say]").forEach(function(b){if(!b.innerHTML)b.innerHTML=SPK});
+renderAlphabet();renderGrammar();renderVocab();renderDialogues();renderQuiz();
+var h="";try{h=location.hash.slice(1)}catch(e){}
+show(h||"accueil",true);
+try{if("speechSynthesis" in window)speechSynthesis.getVoices()}catch(e){}
+})();
+</script>
